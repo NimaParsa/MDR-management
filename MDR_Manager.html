@@ -3,9 +3,11 @@
 <title>MDR Manager</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root{--ink:#1d2a35;--steel:#2f5d7c;--amber:#d99a1c;--line:#d5dce1;--ok:#3a8f6b;--mut:#6b7a86;--bg:#f2f4f5;--card:#fff;--hd:#1d2a35;--tx:#1d2a35;--th:#e9eef1;--grp:#dfe8ee;--grp2:#d3dfe7;--trk:#e6ebee;--onp:#fff}
-:root[data-theme=dark]{color-scheme:dark;--bg:#12181e;--card:#1b242d;--hd:#0b1015;--tx:#e4eaef;--mut:#8fa0ad;--line:#2d3b47;--th:#243240;--grp:#24394a;--grp2:#2c465a;--trk:#2b3947;--steel:#6fb0d6;--ok:#4cc08f;--amber:#e8ae3a;--onp:#0b1015}
-:root[data-theme=olive]{--bg:#eef0e3;--card:#fbfcf5;--hd:#3b4a22;--tx:#2a3318;--mut:#6b7556;--line:#cdd3b8;--th:#e0e5cd;--grp:#d3dbb5;--grp2:#c7d1a3;--trk:#dde2c8;--steel:#5b7a2a;--ok:#4f8a2f;--amber:#c98a12}
+:root{--ink:#1d2a35;--steel:#2f5d7c;--amber:#d99a1c;--line:#d5dce1;--ok:#3a8f6b;--mut:#6b7a86;--bg:#f2f4f5;--card:#fff;--hd:#1d2a35;--tx:#1d2a35;--th:#e9eef1;--grp:#dfe8ee;--grp2:#d3dfe7;--trk:#e6ebee;--onp:#fff;--card2:#f3f7fa;--glow:#2f5d7c24;--grid:#2f5d7c0f;--sheen:#ffffffb0}
+:root[data-theme=dark]{color-scheme:dark;--bg:#12181e;--card:#1b242d;--hd:#0b1015;--tx:#e4eaef;--mut:#8fa0ad;--line:#2d3b47;--th:#243240;--grp:#24394a;--grp2:#2c465a;--trk:#2b3947;--steel:#6fb0d6;--ok:#4cc08f;--amber:#e8ae3a;--onp:#0b1015;--card2:#16202a;--glow:#6fb0d635;--grid:#6fb0d611;--sheen:#ffffff1c}
+:root[data-theme=olive]{--bg:#eef0e3;--card:#fbfcf5;--hd:#3b4a22;--tx:#2a3318;--mut:#6b7556;--line:#cdd3b8;--th:#e0e5cd;--grp:#d3dbb5;--grp2:#c7d1a3;--trk:#dde2c8;--steel:#5b7a2a;--ok:#4f8a2f;--amber:#c98a12;--card2:#f0f3e0;--glow:#5b7a2a26;--grid:#5b7a2a12;--sheen:#ffffffb0}
+:root[data-theme=ocean]{--bg:#e6f3f5;--card:#fbffff;--card2:#e8f5f7;--hd:#0a4651;--tx:#10343b;--mut:#4c7580;--line:#b9dae0;--th:#d4ecf0;--grp:#c2e3e8;--grp2:#afdae1;--trk:#d1e7eb;--steel:#0b7d8e;--ok:#1b9a67;--amber:#e08a1f;--onp:#fff;--glow:#0b7d8e2a;--grid:#0b7d8e14;--sheen:#ffffffc0}
+:root[data-theme=aurora]{color-scheme:dark;--bg:#0e0b1c;--card:#171230;--card2:#1f1840;--hd:#08061a;--tx:#ece8ff;--mut:#9f97c9;--line:#2e2859;--th:#251f4c;--grp:#2a2358;--grp2:#352c6b;--trk:#2a2455;--steel:#9b8cff;--ok:#3fe0b0;--amber:#ffbf47;--onp:#0e0b1c;--glow:#9b8cff38;--grid:#9b8cff14;--sheen:#ffffff1e}
 *{box-sizing:border-box}body{margin:0;font:14px/1.4 "Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--tx)}
 header{background:var(--hd);color:#fff;padding:12px 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 header input{background:#2b3b48;border:1px solid #44586a;color:#fff;border-radius:4px;padding:6px 8px;font:inherit}
@@ -23,9 +25,9 @@ h2{font-size:15px;margin:22px 0 8px}
 .wide{grid-column:span 2}@media(max-width:560px){.wide{grid-column:auto}}
 .ring{width:110px;height:110px;display:block}.rw{display:flex;gap:12px;align-items:center}
 .lg{font-size:12px;flex:1;min-width:0}.lg div{display:flex;gap:6px;align-items:center;white-space:nowrap}.lg i{width:9px;height:9px;border-radius:2px;flex:none}.lg b{margin-left:auto;padding-left:8px}
-.seg{display:flex;height:12px;border-radius:3px;overflow:hidden;background:var(--trk);margin:8px 0 6px}.seg i{display:block}
+.seg{display:flex;height:12px;border-radius:3px;overflow:hidden;background:var(--trk);margin:8px 0 6px}.seg i{display:block;background:var(--bc,var(--ok))}
 .hb{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:12px}.hl{width:90px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ht{flex:1;height:12px;background:var(--trk);border-radius:3px;overflow:hidden}.ht i{display:block;height:100%}.hv{width:150px;text-align:right;flex:none}
+.ht{flex:1;height:12px;background:var(--trk);border-radius:3px;overflow:hidden}.ht i{display:block;height:100%;background:var(--bc,var(--steel))}.hv{width:150px;text-align:right;flex:none}
 .tw{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:auto}
 table{border-collapse:collapse;width:100%;min-width:1100px}
 th{background:var(--th);text-align:left;font-size:12px;padding:7px 6px;position:sticky;top:0}td{padding:3px 6px;border-top:1px solid var(--line)}
@@ -34,7 +36,7 @@ tr.grp:hover td{background:var(--grp2)}.car{display:inline-flex;width:18px;heigh
 td input,td select{width:100%;border:1px solid transparent;background:transparent;color:var(--tx);font:inherit;padding:4px;border-radius:3px}
 td input:hover,td select:hover,td input:focus,td select:focus{border-color:var(--line);background:var(--card)}
 td input[type=number]{text-align:right}.cur{display:flex;align-items:center}.cur span{color:var(--mut)}
-.mb{height:5px;background:var(--trk);border-radius:3px;overflow:hidden;min-width:70px}.mb i{display:block;height:100%;background:var(--ok)}
+.mb{height:5px;background:var(--trk);border-radius:3px;overflow:hidden;min-width:70px}.mb i{display:block;height:100%;background:var(--bc,var(--ok))}
 .x{border:0;background:none;color:#a33;padding:2px 6px}
 dialog{background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:18px;width:min(640px,94vw)}dialog::backdrop{background:#0006}
 dialog h3{margin:0 0 10px}.f{display:grid;grid-template-columns:1fr 1fr;gap:10px}.f label{display:block;font-size:12px;color:var(--mut)}
@@ -116,6 +118,61 @@ footer{max-width:1500px;margin:10px auto 24px;padding:12px 20px;border-top:1px s
 .trans-preview table{min-width:0}
 #dPrevTrans{width:min(900px,96vw);max-height:94vh;overflow:auto}
 .pvpage .trn-preview{border:0;padding:0}
+
+/* ===== futuristic dashboards ===== */
+.ring{overflow:visible}.rt{font-variant-numeric:tabular-nums}.ring.mini{width:60px;height:60px;flex:none}
+.hud{--ph:0s}
+.hud .card{position:relative;overflow:hidden;border-radius:14px;border:1px solid var(--line);background:linear-gradient(155deg,var(--card) 0%,var(--card2) 100%);box-shadow:0 10px 30px -18px var(--glow);transition:border-color .25s,box-shadow .25s}
+.hud .card:hover{border-color:var(--steel);box-shadow:0 14px 36px -16px var(--steel)}
+.hud .card::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(110% 90% at 100% 0%,var(--glow),transparent 62%),linear-gradient(var(--grid) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/22px 22px}
+.hud .card::after{content:"";position:absolute;top:-10%;bottom:-10%;left:-45%;width:30%;pointer-events:none;background:linear-gradient(100deg,transparent,var(--sheen),transparent);transform:skewX(-18deg);opacity:0}
+.hud .card>*{position:relative;z-index:1}
+.hud .card:nth-child(3n+2){--o:3s}.hud .card:nth-child(3n){--o:6s}
+.hud .card h3{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut);letter-spacing:.2px;margin-bottom:10px}
+.hud .card h3::before{content:"";width:6px;height:6px;flex:none;border-radius:50%;background:var(--c,var(--steel));box-shadow:0 0 8px 1px var(--c,var(--steel))}
+.hud .big{font-size:32px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+@supports (background-clip:text) and (color:color-mix(in srgb,red,blue)){.hud .big{background:linear-gradient(180deg,var(--tx) 30%,color-mix(in srgb,var(--tx) 55%,var(--c,var(--steel))));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}}
+.hud .kpi{border-top:1px solid var(--line);box-shadow:inset 3px 0 0 var(--c,var(--steel)),0 10px 30px -18px var(--glow)}
+.hud .kpi::before{background:radial-gradient(90% 120% at 100% 0%,color-mix(in srgb,var(--c,var(--steel)) 26%,transparent),transparent 62%),linear-gradient(var(--grid) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/22px 22px}
+.kb{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hud .rw .ring{width:140px;height:140px}
+.hud .rp{filter:drop-shadow(0 0 1.3px var(--bc))}
+.hud .orb{transform-origin:21px 21px}
+.hud .lg i{border-radius:50%;box-shadow:0 0 7px currentColor}
+.hud .ht{height:10px;border-radius:99px;overflow:visible;background:var(--trk);box-shadow:inset 0 1px 3px #0003}
+.hud .ht.stk{overflow:hidden}
+.hud .seg{height:12px;border-radius:99px;box-shadow:inset 0 1px 3px #0003}
+.hud .ht i,.hud .seg i{position:relative;border-radius:99px;background:linear-gradient(90deg,color-mix(in srgb,var(--bc,var(--ok)) 45%,transparent),var(--bc,var(--ok)));box-shadow:0 0 12px -2px var(--bc,var(--ok))}
+.hud .ht.stk i,.hud .seg i{border-radius:0;box-shadow:none}
+.hud .ht i::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.42) 50%,transparent 70%) 0 0/80px 100% no-repeat}
+.hud .ht:not(.stk) i::before{content:"";position:absolute;right:-1px;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--bc,var(--ok)),0 0 10px 2px var(--bc,var(--ok));z-index:2}
+.hud .ht i[style*="width:0%"]::before{display:none}
+.hud .mb{height:6px;border-radius:99px}.hud .mb i{border-radius:99px;background:linear-gradient(90deg,color-mix(in srgb,var(--bc,var(--ok)) 45%,transparent),var(--bc,var(--ok)));box-shadow:0 0 8px -1px var(--bc,var(--ok))}
+.hud .dt thead th{background:transparent;border-bottom:1px solid var(--steel);color:var(--mut);font-weight:600}
+.hud .dt td{border-top:1px solid var(--line)}.hud .dt tbody tr{transition:background .2s}.hud .dt tbody tr:hover td{background:var(--th)}
+.hud .dt tfoot td{border-top:1px solid var(--steel)}
+@media (prefers-reduced-motion:no-preference){
+@keyframes cardin{from{opacity:0;transform:translateY(12px)}}
+@keyframes ringdraw{from{stroke-dasharray:0 100}}
+@keyframes barin{from{width:0}}
+@keyframes sheen{0%,70%{left:-45%;opacity:0}76%{opacity:1}100%{left:135%;opacity:0}}
+@keyframes shim{from{background-position:-80px 0}to{background-position:calc(100% + 80px) 0}}
+@keyframes orb{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.55;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+.fx .card{animation:cardin .75s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*70ms)}
+.fx .rp{animation:ringdraw 1.5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*70ms + .25s + var(--k,0)*140ms)}
+.fx .ht i,.fx .seg i,.fx .mb i{animation:barin 1.2s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*70ms + .3s)}
+.hud .card::after{animation:sheen 9s ease-in-out infinite;animation-delay:calc(var(--ph) - var(--o,0s))}
+.hud .card h3::before{animation:pulse 3s ease-in-out infinite;animation-delay:var(--ph)}
+.hud .orb{animation:orb 36s linear infinite;animation-delay:var(--ph)}
+.hud .ht i::after{animation:shim 3s linear infinite;animation-delay:var(--ph)}
+}
+/* settings: card switches */
+.cardsel{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px}@media(max-width:560px){.cardsel{grid-template-columns:1fr}}
+.tgl{display:flex;align-items:center;gap:9px;padding:5px 6px;border-radius:6px;cursor:pointer;font-size:13px}.tgl:hover{background:var(--th)}
+.tgl input{appearance:none;-webkit-appearance:none;width:34px;height:18px;border-radius:99px;background:var(--trk);border:1px solid var(--line);position:relative;flex:none;cursor:pointer;margin:0;transition:background .2s,border-color .2s}
+.tgl input::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:var(--mut);transition:left .2s,background .2s}
+.tgl input:checked{background:var(--steel);border-color:var(--steel)}.tgl input:checked::after{left:18px;background:var(--onp)}
 </style></head><body>
 <header class="np">
 <img id="hlogo" alt="Company logo"><b style="font-size:17px">MDR Manager</b>
@@ -133,10 +190,10 @@ footer{max-width:1500px;margin:10px auto 24px;padding:12px 20px;border-top:1px s
 
 <div class="tabpane on" id="mdrTab">
 <div class="toprow"><div><h1 id="pt" style="margin:0;font-size:24px"></h1><div class="mut" id="pc"></div></div><div class="clock"><div><div class="mut">Gregorian</div><div id="cg"></div><div class="tm" id="ct"></div></div><div><div class="mut">Shamsi (Jalali)</div><div id="cs" dir="rtl" style="text-align:left"></div><div class="tm" id="cn"></div></div></div></div>
-<h2>Project dashboard</h2><div class="grid" id="dash"></div>
+<h2>Project dashboard</h2><div class="grid hud" id="dash"></div>
 <h2>Master Document Register</h2>
 <div class="tw"><table id="mdr"><thead><tr><th style="width:46px" class="r">#</th><th style="width:130px">Doc. No.</th><th>Title</th><th style="width:130px">Discipline</th><th style="width:140px">Type</th><th style="width:110px" class="r">Weight %</th><th style="width:90px" class="r">Manhours</th><th style="width:90px" class="r">Rate<br>$</th><th style="width:110px" class="r">Cost</th><th style="width:130px">Progress %</th><th style="width:110px" class="r">Earned</th><th style="width:34px"></th></tr></thead><tbody id="tb"></tbody></table></div>
-<h2>Project financial summary</h2><div class="grid" id="fin"></div>
+<h2>Project financial summary</h2><div class="grid hud" id="fin"></div>
 </div>
 
 <div class="tabpane" id="transTab">
@@ -193,9 +250,9 @@ const COL=["#2f5d7c","#d99a1c","#3a8f6b","#8a5a9e","#c4553b","#4aa3b5","#7a8a3a"
 const today=()=>new Date().toISOString().slice(0,10);
 let S=(()=>{try{return JSON.parse(localStorage.getItem(KEY))}catch(e){}})()||{name:"",client:"",docs:[],open:{},prev:0};
 S.inv=S.inv||{no:"INV-001",date:today(),to:""};S.open=S.open||{};S.prev=S.prev||0;
-S.theme=S.theme||"light";S.trans=S.trans||[];S.transSeq=S.transSeq||0;
-const VERSION="1.4",UPDATED="2026-11-12";
-let uid=Date.now();
+S.theme=S.theme||"light";S.hide=S.hide||{};S.trans=S.trans||[];S.transSeq=S.transSeq||0;
+const VERSION="1.5",UPDATED="2026-11-13";
+let uid=Date.now(),playFx=true;
 function stamp(t){q("#st").textContent=t+" "+new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}
 function save(m){try{localStorage.setItem(KEY,JSON.stringify(S));stamp(m?"Saved":"Auto-saved")}catch(e){stamp("Save failed, use Backup")}}
 
@@ -218,35 +275,64 @@ function calc(){recalcWeights();const m={};const T={docs:0,w:0,wp:0,hrs:0,cost:0
  gs.forEach((g,k)=>{g.share=T.w?g.w/T.w*100:0;g.pr=g.w?g.wp/g.w:0;g.c=COL[k%COL.length]});T.pr=T.w?T.wp/T.w:0;return{gs,T}}
 
 /* charts */
-function ring(parts,total,big,sub){const t=total||parts.reduce((a,p)=>a+p.v,0)||1;let off=0;
- let s='<svg viewBox="0 0 42 42" class="ring"><circle cx="21" cy="21" r="15.9155" fill="none" style="stroke:var(--trk)" stroke-width="5"/>';
- parts.forEach(p=>{const l=Math.max(0,p.v)/t*100;if(l>0){s+=`<circle cx="21" cy="21" r="15.9155" fill="none" stroke="${p.c}" stroke-width="5" stroke-dasharray="${l} ${100-l}" stroke-dashoffset="${25-off}"/>`;off+=l}});
- return s+`<text x="21" y="22" text-anchor="middle" font-size="6" font-weight="700" style="fill:var(--tx)">${big}</text><text x="21" y="27.5" text-anchor="middle" font-size="3.2" style="fill:var(--mut)">${sub||""}</text></svg>`}
-const legend=(gs,f)=>'<div class="lg">'+gs.map(g=>`<div><i style="background:${g.c}"></i>${esc(g.name)}<b>${f(g)}</b></div>`).join("")+'</div>';
-const hb=(l,v,max,c,t)=>`<div class="hb"><span class="hl" title="${esc(l)}">${esc(l)}</span><div class="ht"><i style="width:${max?Math.min(100,v/max*100):0}%;background:${c}"></i></div><span class="hv">${t}</span></div>`;
+let GID=0;
+const rc=c=>/^var\(/.test(c)?(getComputedStyle(document.documentElement).getPropertyValue(c.slice(4,-1).split(",")[0].trim()).trim()||"#888"):c;
+const lt=(h,k)=>{h=String(h).replace("#","");if(h.length==3)h=h.split("").map(x=>x+x).join("");const n=parseInt(h,16)||0,f=v=>Math.round(v+(255-v)*k);return "#"+[n>>16&255,n>>8&255,n&255].map(v=>f(v).toString(16).padStart(2,"0")).join("")};
+const FM={i:x=>Math.round(x).toLocaleString("en-US"),h:x=>x.toLocaleString("en-US",{maximumFractionDigits:1}),m:x=>money(x),p:x=>pct(x)};
+const cn=(v,f)=>`<span data-v="${+v||0}" data-f="${f}">${FM[f](+v||0)}</span>`;
+const reduceM=window.matchMedia?matchMedia("(prefers-reduced-motion:reduce)"):{matches:false};
+function fxCount(root){if(reduceM.matches)return;root.querySelectorAll("[data-v]").forEach(el=>{const v=+el.dataset.v,f=FM[el.dataset.f],t0=performance.now();if(!f||!isFinite(v))return;
+ const st=t=>{const k=Math.min(1,(t-t0-250)/1300);if(k<0){requestAnimationFrame(st);return}const e=1-Math.pow(1-k,3);el.textContent=f(v*e);if(k<1)requestAnimationFrame(st)};el.textContent=f(0);requestAnimationFrame(st)})}
+function ring(parts,total,big,sub,cnt,o){o=o||{};const mi=!!o.mini,id="rg"+(++GID),t=total||parts.reduce((a,p)=>a+p.v,0)||1,one=parts.filter(p=>p.v>0).length<2,sw=mi?5:4;let off=0,defs="",arcs="";
+ parts.forEach((p,k)=>{const l=Math.max(0,p.v)/t*100;if(l<=0)return;const c=rc(p.c),d=Math.max(.01,one?l:l-.7);
+  defs+=`<linearGradient id="${id}_${k}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c}"/><stop offset="1" stop-color="${lt(c,.5)}"/></linearGradient>`;
+  arcs+=`<circle class="rp" style="--bc:${c};--k:${k}" cx="21" cy="21" r="15.9155" fill="none" stroke="url(#${id}_${k})" stroke-width="${sw}" stroke-linecap="${one?"round":"butt"}" stroke-dasharray="${d.toFixed(3)} ${(100-d).toFixed(3)}" stroke-dashoffset="${(25-off).toFixed(3)}"/>`;off+=l});
+ const deco='<circle cx="21" cy="21" r="18.7" fill="none" stroke-width=".9" stroke-dasharray=".25 1.586" style="stroke:var(--mut)" opacity=".5"/><g class="orb"><circle cx="21" cy="21" r="20.3" fill="none" stroke-width=".35" stroke-dasharray="6.8 4.9 1.5 5.03" style="stroke:var(--steel)" opacity=".8"/></g>';
+ const tx=`<text class="rt" x="21" y="${mi?23.4:22}" text-anchor="middle" font-size="${mi?7.4:6}" font-weight="700" style="fill:var(--tx)"${cnt?` data-v="${+cnt[0]||0}" data-f="${cnt[1]}"`:""}>${big}</text>${mi||!sub?"":`<text x="21" y="27.6" text-anchor="middle" font-size="3.2" style="fill:var(--mut)">${sub}</text>`}`;
+ return `<svg viewBox="0 0 42 42" class="ring${mi?" mini":""}">${o.tip?`<title>${esc(o.tip)}</title>`:""}<defs>${defs}</defs><circle cx="21" cy="21" r="15.9155" fill="none" style="stroke:var(--trk)" stroke-width="${sw}"/>${mi?"":deco}${arcs}${tx}</svg>`}
+const legend=(gs,f)=>'<div class="lg">'+gs.map(g=>`<div><i style="background:${g.c};color:${g.c}"></i>${esc(g.name)}<b>${f(g)}</b></div>`).join("")+'</div>';
+const hb=(l,v,max,c,t)=>`<div class="hb"><span class="hl" title="${esc(l)}">${esc(l)}</span><div class="ht"><i style="width:${max?Math.min(100,v/max*100):0}%;--bc:${c}"></i></div><span class="hv">${t}</span></div>`;
+
+/* dashboard cards that can be switched on/off in Settings */
+const CARDS=[["k_docs","Total documents","d"],["k_disc","Disciplines","d"],["k_mh","Manhours","d"],["k_rate","Average hourly rate","d"],["c_prog","Overall progress (weighted)","d"],["c_share","Discipline weight share","d"],["c_status","Status by discipline","d"],["c_types","Documents by type","d"],["c_dt","Discipline details table","d"],
+ ["f_bud","Total budget","f"],["f_earn","Earned to date","f"],["f_rem","Remaining","f"],["f_inv","Invoiced to date","f"],["f_due","Due for next invoice","f"],["f_evb","Earned vs budget","f"],["f_share","Budget share by discipline","f"],["f_bei","Budget, earned, invoiced","f"],["f_type","Cost by document type","f"],["f_dt","Financial detail by discipline","f"]];
 
 function dash(gs,T){
  const ty={};S.docs.forEach(d=>{const t=ty[d.type]=ty[d.type]||{n:0,c:0,e:0},c=d.hrs*d.rate;t.n++;t.c+=c;t.e+=c*d.pr/100});
  const tys=Object.entries(ty).sort((a,b)=>b[1].n-a[1].n),mxn=Math.max(...tys.map(x=>x[1].n),1),mxc=Math.max(...tys.map(x=>x[1].c),1);
  const rem=T.cost-T.earned,due=T.earned-S.prev,ac=T.hrs?T.cost/T.hrs:0,N=T.docs||1,none='<div class="mut">Add or import documents to see this chart.</div>';
- const kpi=(l,v,s,c)=>`<div class="card kpi" style="border-top-color:${c}"><h3>${l}</h3><div class="big">${v}</div><div class="mut">${s}</div></div>`;
- const lg=(c,l,v)=>`<div><i style="background:${c}"></i>${l}<b>${v}</b></div>`;
- q("#dash").innerHTML=kpi("Total documents",T.docs,`${T.done} completed, ${T.prog} in progress, ${T.ns} not started`,"var(--steel)")
- +kpi("Disciplines",gs.length,`Total weight ${n4(T.w)}%`,"var(--amber)")
- +kpi("Manhours",T.hrs.toLocaleString(undefined,{maximumFractionDigits:1}),`${T.mhE.toFixed(1)} h earned, ${(T.hrs-T.mhE).toFixed(1)} h remaining`,"var(--ok)")
- +kpi("Average hourly rate",money(ac),`Budget ${money(T.cost)}, earned ${money(T.earned)}`,"#8a5a9e")
- +`<div class="card wide"><h3>Overall progress (weighted)</h3><div class="rw">${ring([{v:T.pr,c:"#3a8f6b"}],100,pct(T.pr),"complete")}<div style="flex:1"><div class="seg"><i style="width:${T.done/N*100}%;background:var(--ok)"></i><i style="width:${T.prog/N*100}%;background:var(--amber)"></i></div><div class="lg">${lg("var(--ok)","Completed",T.done)}${lg("var(--amber)","In progress",T.prog)}${lg("var(--trk)","Not started",T.ns)}</div></div></div></div>`
- +`<div class="card wide"><h3>Discipline weight share (manhours)</h3><div class="rw">${ring(gs.map(g=>({v:g.w,c:g.c})),0,gs.length,"disciplines")}${legend(gs,g=>pct(g.share))}</div></div>`
- +`<div class="card wide"><h3>Status by discipline</h3>${gs.map(g=>{const d=g.docs.filter(x=>x.pr>=100).length,p=g.docs.filter(x=>x.pr>0&&x.pr<100).length,n=g.docs.length;return `<div class="hb"><span class="hl">${esc(g.name)}</span><div class="ht" style="display:flex"><i style="width:${d/n*100}%;background:var(--ok)"></i><i style="width:${p/n*100}%;background:var(--amber)"></i></div><span class="hv">${d} done, ${p} active, ${n-d-p} open</span></div>`}).join("")||none}</div>`
- +`<div class="card wide"><h3>Documents by type</h3>${tys.map(([k,v])=>hb(k,v.n,mxn,"var(--steel)",v.n+" docs")).join("")||none}</div>`
- +`<div class="card full"><h3>Discipline details</h3><div class="tw2"><table class="dt"><thead><tr><th>Discipline</th><th class="r">Docs</th><th class="r">Completed</th><th class="r">WF share</th><th class="r">Manhours</th><th style="width:170px">Progress</th><th class="r">Budget</th><th class="r">Earned</th></tr></thead><tbody>${gs.map(g=>`<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;background:${g.c}"></i>${esc(g.name)}</td><td class="r">${g.docs.length}</td><td class="r">${g.docs.filter(x=>x.pr>=100).length}</td><td class="r">${pct(g.share)}</td><td class="r">${g.hrs}</td><td><div class="mb"><i style="width:${g.pr}%"></i></div>${pct(g.pr)}</td><td class="r">${money(g.cost)}</td><td class="r">${money(g.earned)}</td></tr>`).join("")}</tbody><tfoot><tr><td>Total</td><td class="r">${T.docs}</td><td class="r">${T.done}</td><td class="r">100%</td><td class="r">${T.hrs}</td><td>${pct(T.pr)}</td><td class="r">${money(T.cost)}</td><td class="r">${money(T.earned)}</td></tr></tfoot></table></div></div>`;
- const kp=(l,v,c)=>`<div class="card kpi" style="border-top-color:${c}"><h3>${l}</h3><div class="big" style="font-size:22px">${money(v)}</div></div>`;
- q("#fin").innerHTML=kp("Total budget (manhours x rate)",T.cost,"var(--steel)")+kp("Earned to date",T.earned,"var(--ok)")+kp("Remaining",rem,"var(--amber)")+kp("Invoiced to date",S.prev,"#8a5a9e")+kp(due<0?"Over-invoiced":"Due for next invoice",Math.abs(due),due<0?"#c4553b":"var(--steel)")
- +`<div class="card wide"><h3>Earned vs budget</h3><div class="rw">${ring([{v:T.earned,c:"#3a8f6b"}],T.cost||1,pct(T.cost?T.earned/T.cost*100:0),"earned")}<div class="lg">${lg("#3a8f6b","Earned",money(T.earned))}${lg("var(--trk)","Remaining",money(rem))}${lg("#d99a1c","Invoiced",money(S.prev))}</div></div></div>`
- +`<div class="card wide"><h3>Budget share by discipline</h3><div class="rw">${ring(gs.map(g=>({v:g.cost,c:g.c})),0,gs.length,"disciplines")}${legend(gs,g=>money(g.cost))}</div></div>`
- +`<div class="card wide"><h3>Budget, earned, invoiced</h3>${hb("Budget",T.cost,T.cost,"#9db8c9",money(T.cost))}${hb("Earned",T.earned,T.cost,"#3a8f6b",money(T.earned))}${hb("Invoiced",S.prev,T.cost,"#d99a1c",money(S.prev))}${hb("Remaining",rem,T.cost,"#c4553b",money(rem))}</div>`
- +`<div class="card wide"><h3>Cost by document type (earned of budget)</h3>${tys.map(([k,v])=>`<div class="hb"><span class="hl">${esc(k)}</span><div style="flex:1"><div class="ht" style="width:${v.c/mxc*100}%"><i style="width:${v.c?v.e/v.c*100:0}%;background:var(--ok)"></i></div></div><span class="hv">${money(v.e)} of ${money(v.c)}</span></div>`).join("")||none}</div>`
- +`<div class="card full"><h3>Financial detail by discipline</h3><div class="tw2"><table class="dt"><thead><tr><th>Discipline</th><th class="r">Budget</th><th class="r">Share of budget</th><th class="r">Earned</th><th class="r">Remaining</th><th style="width:170px">Earned %</th></tr></thead><tbody>${gs.map(g=>`<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;background:${g.c}"></i>${esc(g.name)}</td><td class="r">${money(g.cost)}</td><td class="r">${pct(T.cost?g.cost/T.cost*100:0)}</td><td class="r">${money(g.earned)}</td><td class="r">${money(g.cost-g.earned)}</td><td><div class="mb"><i style="width:${g.cost?g.earned/g.cost*100:0}%"></i></div>${pct(g.cost?g.earned/g.cost*100:0)}</td></tr>`).join("")}</tbody><tfoot><tr><td>Total</td><td class="r">${money(T.cost)}</td><td class="r">100%</td><td class="r">${money(T.earned)}</td><td class="r">${money(rem)}</td><td>${pct(T.cost?T.earned/T.cost*100:0)}</td></tr></tfoot></table></div></div>`}
+ const pl=playFx;playFx=false;
+ const rg=v=>Math.max(0,Math.min(100,+v||0)),mini=(v,c,tip)=>ring([{v:rg(v),c}],100,Math.round(rg(v))+"%","",null,{mini:1,tip}),ep=T.cost?T.earned/T.cost*100:0;
+ const kpi=(l,v,s,c,mv,tip)=>`<div class="card kpi" style="--c:${rc(c)}"><h3>${l}</h3><div class="kb"><div style="min-width:0"><div class="big">${v}</div><div class="mut">${s}</div></div>${mini(mv,c,tip)}</div></div>`;
+ const kp=(l,v,c,mv,tip)=>`<div class="card kpi" style="--c:${rc(c)}"><h3>${l}</h3><div class="kb"><div class="big" style="font-size:25px">${cn(v,"m")}</div>${mini(mv,c,tip)}</div></div>`;
+ const lg=(c,l,v)=>`<div><i style="background:${c};color:${c}"></i>${l}<b>${v}</b></div>`;
+ const dot=c=>`<i style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:${c};box-shadow:0 0 6px ${c}"></i>`;
+ const D=[
+ ["k_docs",kpi("Total documents",cn(T.docs,"i"),`${T.done} completed, ${T.prog} in progress, ${T.ns} not started`,"var(--steel)",T.docs?T.done/T.docs*100:0,"Completed documents")],
+ ["k_disc",kpi("Disciplines",cn(gs.length,"i"),`Total weight ${n4(T.w)}%`,"var(--amber)",T.pr,"Overall progress")],
+ ["k_mh",kpi("Manhours",cn(T.hrs,"h"),`${T.mhE.toFixed(1)} h earned, ${(T.hrs-T.mhE).toFixed(1)} h remaining`,"var(--ok)",T.hrs?T.mhE/T.hrs*100:0,"Manhours earned")],
+ ["k_rate",kpi("Average hourly rate",cn(ac,"m"),`Budget ${money(T.cost)}, earned ${money(T.earned)}`,"#8a5a9e",ep,"Earned of budget")],
+ ["c_prog",`<div class="card wide"><h3>Overall progress (weighted)</h3><div class="rw">${ring([{v:T.pr,c:"var(--ok)"}],100,pct(T.pr),"complete",[T.pr,"p"])}<div style="flex:1"><div class="seg"><i style="width:${T.done/N*100}%;--bc:var(--ok)"></i><i style="width:${T.prog/N*100}%;--bc:var(--amber)"></i></div><div class="lg">${lg("var(--ok)","Completed",T.done)}${lg("var(--amber)","In progress",T.prog)}${lg("var(--trk)","Not started",T.ns)}</div></div></div></div>`],
+ ["c_share",`<div class="card wide"><h3>Discipline weight share (manhours)</h3><div class="rw">${ring(gs.map(g=>({v:g.w,c:g.c})),0,gs.length,"disciplines",[gs.length,"i"])}${legend(gs,g=>pct(g.share))}</div></div>`],
+ ["c_status",`<div class="card wide"><h3>Status by discipline</h3>${gs.map(g=>{const d=g.docs.filter(x=>x.pr>=100).length,p=g.docs.filter(x=>x.pr>0&&x.pr<100).length,n=g.docs.length;return `<div class="hb"><span class="hl">${esc(g.name)}</span><div class="ht stk" style="display:flex"><i style="width:${d/n*100}%;--bc:var(--ok)"></i><i style="width:${p/n*100}%;--bc:var(--amber)"></i></div><span class="hv">${d} done, ${p} active, ${n-d-p} open</span></div>`}).join("")||none}</div>`],
+ ["c_types",`<div class="card wide"><h3>Documents by type</h3>${tys.map(([k,v])=>hb(k,v.n,mxn,"var(--steel)",v.n+" docs")).join("")||none}</div>`],
+ ["c_dt",`<div class="card full"><h3>Discipline details</h3><div class="tw2"><table class="dt"><thead><tr><th>Discipline</th><th class="r">Docs</th><th class="r">Completed</th><th class="r">WF share</th><th class="r">Manhours</th><th style="width:170px">Progress</th><th class="r">Budget</th><th class="r">Earned</th></tr></thead><tbody>${gs.map(g=>`<tr><td>${dot(g.c)}${esc(g.name)}</td><td class="r">${g.docs.length}</td><td class="r">${g.docs.filter(x=>x.pr>=100).length}</td><td class="r">${pct(g.share)}</td><td class="r">${g.hrs}</td><td><div class="mb"><i style="width:${g.pr}%"></i></div>${pct(g.pr)}</td><td class="r">${money(g.cost)}</td><td class="r">${money(g.earned)}</td></tr>`).join("")}</tbody><tfoot><tr><td>Total</td><td class="r">${T.docs}</td><td class="r">${T.done}</td><td class="r">100%</td><td class="r">${T.hrs}</td><td>${pct(T.pr)}</td><td class="r">${money(T.cost)}</td><td class="r">${money(T.earned)}</td></tr></tfoot></table></div></div>`]];
+ const F=[
+ ["f_bud",kp("Total budget (manhours x rate)",T.cost,"var(--steel)",T.cost?100:0,"Budget")],
+ ["f_earn",kp("Earned to date",T.earned,"var(--ok)",ep,"Earned of budget")],
+ ["f_rem",kp("Remaining",rem,"var(--amber)",T.cost?rem/T.cost*100:0,"Remaining of budget")],
+ ["f_inv",kp("Invoiced to date",S.prev,"#8a5a9e",T.cost?S.prev/T.cost*100:0,"Invoiced of budget")],
+ ["f_due",kp(due<0?"Over-invoiced":"Due for next invoice",Math.abs(due),due<0?"#c4553b":"var(--steel)",T.cost?Math.abs(due)/T.cost*100:0,"Share of budget")],
+ ["f_evb",`<div class="card wide"><h3>Earned vs budget</h3><div class="rw">${ring([{v:T.earned,c:"var(--ok)"}],T.cost||1,pct(ep),"earned",[ep,"p"])}<div class="lg">${lg("var(--ok)","Earned",money(T.earned))}${lg("var(--trk)","Remaining",money(rem))}${lg("var(--amber)","Invoiced",money(S.prev))}</div></div></div>`],
+ ["f_share",`<div class="card wide"><h3>Budget share by discipline</h3><div class="rw">${ring(gs.map(g=>({v:g.cost,c:g.c})),0,gs.length,"disciplines",[gs.length,"i"])}${legend(gs,g=>money(g.cost))}</div></div>`],
+ ["f_bei",`<div class="card wide"><h3>Budget, earned, invoiced</h3>${hb("Budget",T.cost,T.cost,"var(--steel)",money(T.cost))}${hb("Earned",T.earned,T.cost,"var(--ok)",money(T.earned))}${hb("Invoiced",S.prev,T.cost,"var(--amber)",money(S.prev))}${hb("Remaining",rem,T.cost,"#c4553b",money(rem))}</div>`],
+ ["f_type",`<div class="card wide"><h3>Cost by document type (earned of budget)</h3>${tys.map(([k,v])=>`<div class="hb"><span class="hl">${esc(k)}</span><div style="flex:1"><div class="ht" style="width:${v.c/mxc*100}%"><i style="width:${v.c?v.e/v.c*100:0}%;--bc:var(--ok)"></i></div></div><span class="hv">${money(v.e)} of ${money(v.c)}</span></div>`).join("")||none}</div>`],
+ ["f_dt",`<div class="card full"><h3>Financial detail by discipline</h3><div class="tw2"><table class="dt"><thead><tr><th>Discipline</th><th class="r">Budget</th><th class="r">Share of budget</th><th class="r">Earned</th><th class="r">Remaining</th><th style="width:170px">Earned %</th></tr></thead><tbody>${gs.map(g=>`<tr><td>${dot(g.c)}${esc(g.name)}</td><td class="r">${money(g.cost)}</td><td class="r">${pct(T.cost?g.cost/T.cost*100:0)}</td><td class="r">${money(g.earned)}</td><td class="r">${money(g.cost-g.earned)}</td><td><div class="mb"><i style="width:${g.cost?g.earned/g.cost*100:0}%"></i></div>${pct(g.cost?g.earned/g.cost*100:0)}</td></tr>`).join("")}</tbody><tfoot><tr><td>Total</td><td class="r">${money(T.cost)}</td><td class="r">100%</td><td class="r">${money(T.earned)}</td><td class="r">${money(rem)}</td><td>${pct(ep)}</td></tr></tfoot></table></div></div>`]];
+ const dEl=q("#dash"),fEl=q("#fin"),ph=-((Date.now()/1000)%36)+"s";
+ [dEl,fEl].forEach(e=>e.classList.toggle("fx",pl));
+ const put=(el,list)=>{el.innerHTML=list.filter(x=>!S.hide[x[0]]).map(x=>x[1]).join("")||'<div class="card full mut">All cards in this section are switched off. Turn them on in Settings (gear icon), Dashboard cards.</div>';el.style.setProperty("--ph",ph);[...el.children].forEach((c,i)=>c.style.setProperty("--i",i))};
+ put(dEl,D);put(fEl,F);
+ if(pl){fxCount(dEl);fxCount(fEl)}}
 
 /* table */
 function render(){const {gs,T}=calc();q("#pname").value=S.name||"";q("#pclient").value=S.client||"";showProj();
@@ -333,7 +419,7 @@ q("#ibtn").onclick=()=>{inv();q("#invoice").classList.add("on")};
 /* backup */
 q("#bk").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,1)],{type:"application/json"}));a.download="MDR_backup_"+today()+".json";a.click()};
 q("#rs").onclick=()=>q("#rsf").click();
-q("#rsf").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!Array.isArray(d.docs))throw 0;if(confirm("Replace current data with this backup?")){S=d;S.inv=S.inv||{no:"INV-001",date:today(),to:""};S.open=S.open||{};S.prev=S.prev||0;S.theme=S.theme||"light";S.trans=S.trans||[];S.transSeq=S.transSeq||0;applyTheme();brand();commit()}}catch(x){alert("This file is not a valid MDR backup.")}};r.readAsText(f)};
+q("#rsf").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(!Array.isArray(d.docs))throw 0;if(confirm("Replace current data with this backup?")){S=d;S.inv=S.inv||{no:"INV-001",date:today(),to:""};S.open=S.open||{};S.prev=S.prev||0;S.theme=S.theme||"light";S.hide=S.hide||{};S.trans=S.trans||[];S.transSeq=S.transSeq||0;applyTheme();brand();commit()}}catch(x){alert("This file is not a valid MDR backup.")}};r.readAsText(f)};
 window.addEventListener("beforeunload",()=>save());
 
 /* settings, themes, images */
@@ -352,9 +438,9 @@ const lgo=(k,h)=>S[k]?`<img src="${S[k]}" style="max-height:${h||60}px;max-width
 function mdrHTML(){const {gs,T}=calc(),pc=Object.assign({disc:false},S.pcols),on=PCOLS.filter(c=>pc[c[0]]!==false),nc=on.length||1,now=new Date();let n=0,rows="";
  const R=new Set(["n","wf","hrs","rate","cost","pr","earned"]);
  const val=(k,d)=>({n:n,no:esc(d.no),title:esc(d.title),disc:esc(d.disc),type:esc(d.type),wf:pct(d.wf),hrs:d.hrs,rate:d.rate,cost:m2(d.hrs*d.rate),pr:d.pr+"%",earned:m2(d.hrs*d.rate*d.pr/100)})[k];
- gs.forEach(g=>{rows+=`<tr class="pg"><td colspan="${nc}">${esc(g.name)}: ${g.docs.length} docs, WF share ${pct(g.share)}, ${g.hrs} h, budget ${money(g.cost)}, progress ${pct(g.pr)}, earned ${money(g.earned)}</td></tr>`;
+ gs.forEach(g=>{rows+=`<tr class="pg"><td colspan="${nc}">${esc(g.name)}</td></tr>`;
   g.docs.forEach(d=>{n++;rows+="<tr>"+on.map(c=>`<td${R.has(c[0])?' class="r"':""}>${val(c[0],d)}</td>`).join("")+"</tr>"})});
- rows+=`<tr class="pg"><td colspan="${nc}">Total: ${T.docs} documents, WF ${n4(T.w)}%, ${T.hrs} h, budget ${money(T.cost)}, progress ${pct(T.pr)}, earned ${money(T.earned)}</td></tr>`;
+ if(S.pTotal!==false)rows+=`<tr class="pg"><td colspan="${nc}">Total: ${T.docs} documents, WF ${n4(T.w)}%, ${T.hrs} h, budget ${money(T.cost)}, progress ${pct(T.pr)}, earned ${money(T.earned)}</td></tr>`;
  return `<table><thead><tr class="hd"><td colspan="${nc}"><div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px">${lgo("logoCo")}<div style="text-align:center"><div style="font-size:18pt;font-weight:700">Master Document Register</div><div style="font-size:12pt">${esc(S.name)}${S.client?", "+esc(S.client):""}</div><div style="font-size:9pt">${gDate(now)} | ${sNum(now)} Shamsi | overall progress ${pct(T.pr)}</div></div>${lgo("logoCl")}</div></td></tr>
  <tr>${on.map(c=>`<th${R.has(c[0])?' class="r"':""}>${c[1]}</th>`).join("")}</tr></thead>
  <tfoot><tr class="hd"><td colspan="${nc}" style="border-top:1px solid #888;font-size:8pt">${esc(S.name)} | Printed ${today()} | Nima Z.Parsa, +989122615271, nima.parsa@gmail.com, zarrinparsa.ir | Version ${VERSION}</td></tr></tfoot><tbody>${rows}</tbody></table>`}
@@ -377,9 +463,9 @@ function reportHTML(){const {gs,T}=calc(),N=T.docs||1,rem=T.cost-T.earned,now=ne
 let PV="mdr";
 function refPrev(){q("#prevBody").innerHTML=PV=="mdr"?mdrHTML():reportHTML()}
 function openPrev(kind){PV=kind;const o=q("#prevOpts"),pc=Object.assign({disc:false},S.pcols);
- o.innerHTML=kind=="mdr"?"<b>Columns to print</b><br>"+PCOLS.map(c=>`<label class="ck"><input type="checkbox" data-pc="${c[0]}"${pc[c[0]]!==false?" checked":""}> ${c[1]}</label>`).join("")+'<div class="mut">A3 landscape. Documents stay grouped by discipline.</div>':'<div class="mut">Status report on A4 portrait, from the current progress figures.</div>';
+ o.innerHTML=kind=="mdr"?"<b>Columns to print</b><br>"+PCOLS.map(c=>`<label class="ck"><input type="checkbox" data-pc="${c[0]}"${pc[c[0]]!==false?" checked":""}> ${c[1]}</label>`).join("")+'<div style="margin-top:8px"><b>Rows</b><br><label class="ck"><input type="checkbox" id="pTot"'+(S.pTotal!==false?" checked":"")+'> Show Total row at the end of the table</label></div><div class="mut">A3 landscape. Documents stay grouped by discipline.</div>':'<div class="mut">Status report on A4 portrait, from the current progress figures.</div>';
  q("#prevTitle").textContent=kind=="mdr"?"Print preview: MDR (A3 landscape)":"Print preview: status report (A4 portrait)";refPrev();q("#dPrev").showModal()}
-q("#prevOpts").addEventListener("change",e=>{const k=e.target.dataset.pc;if(!k)return;S.pcols=Object.assign({disc:false},S.pcols);S.pcols[k]=e.target.checked;save();refPrev()});
+q("#prevOpts").addEventListener("change",e=>{if(e.target.id=="pTot"){S.pTotal=e.target.checked;save();refPrev();return}const k=e.target.dataset.pc;if(!k)return;S.pcols=Object.assign({disc:false},S.pcols);S.pcols[k]=e.target.checked;save();refPrev()});
 q("#pvX").onclick=()=>q("#dPrev").close();
 q("#pvP").onclick=()=>{const m=PV=="mdr";q(m?"#pmdr":"#preport").innerHTML=m?mdrHTML():reportHTML();q("#dPrev").close();document.body.classList.add(m?"pm":"pr");setTimeout(()=>{print();document.body.classList.remove("pm","pr")},200)};
 q("#prt").onclick=()=>openPrev("mdr");q("#rpt").onclick=()=>openPrev("rep");
@@ -550,16 +636,22 @@ qa(".tabs button").forEach(b=>b.onclick=()=>{
 
 /* settings, images, columns */
 function img(file,maxW,png){return new Promise(res=>{const r=new FileReader();r.onload=e=>{const im=new Image();im.onload=()=>{const k=Math.min(1,maxW/im.width),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(png?c.toDataURL("image/png"):c.toDataURL("image/jpeg",.9))};im.src=e.target.result};r.readAsDataURL(file)})}
-function openSet(){const th=[["light","Light","#f2f4f5","#2f5d7c"],["dark","Dark","#12181e","#6fb0d6"],["olive","Olive green","#eef0e3","#5b7a2a"]];
+function openSet(){const th=[["light","Light","#f2f4f5","#2f5d7c"],["dark","Dark","#12181e","#6fb0d6"],["olive","Olive green","#eef0e3","#5b7a2a"],["ocean","Ocean teal","#e6f3f5","#0b7d8e"],["aurora","Aurora violet","#0e0b1c","#9b8cff"]];
  const slot=(k,l,h)=>`<div class="slot"><div class="pvw">${S[k]?`<img src="${S[k]}" alt="">`:'<span class="mut">None</span>'}</div><div><b>${l}</b><div class="mut">${h}</div><label class="btnl">Choose image<input type="file" accept="${k=="sig"?"image/png":"image/png,image/jpeg"}" data-k="${k}" hidden></label> ${S[k]?`<button data-rm="${k}">Remove</button>`:""}</div></div>`;
- q("#setBody").innerHTML=`<h4>Theme</h4><div class="sw">${th.map(t=>`<button data-th="${t[0]}" class="${(S.theme||"light")==t[0]?"on":""}"><i style="background:linear-gradient(90deg,${t[2]} 50%,${t[3]} 50%)"></i>${t[1]}</button>`).join("")}</div><h4>Logos and signature</h4>${slot("logoCo","Company logo","PNG or JPG. Shown in the header and on invoices.")}${slot("logoCl","Client logo","PNG or JPG. Shown on invoices.")}${slot("sig","Signature","PNG, transparent background works best. Used on invoices and transmittals.")}`}
+ q("#setBody").innerHTML=`<h4>Theme</h4><div class="sw">${th.map(t=>`<button data-th="${t[0]}" class="${(S.theme||"light")==t[0]?"on":""}"><i style="background:linear-gradient(90deg,${t[2]} 50%,${t[3]} 50%)"></i>${t[1]}</button>`).join("")}</div>${cardSel()}<h4>Logos and signature</h4>${slot("logoCo","Company logo","PNG or JPG. Shown in the header and on invoices.")}${slot("logoCl","Client logo","PNG or JPG. Shown on invoices.")}${slot("sig","Signature","PNG, transparent background works best. Used on invoices and transmittals.")}`}
 q("#gear").innerHTML='<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path fill-rule="evenodd" d="M12 5.5a6.5 6.5 0 1 0 0 13a6.5 6.5 0 1 0 0-13zM12 9.4a2.6 2.6 0 1 1 0 5.2a2.6 2.6 0 1 1 0-5.2z"/>'+[0,45,90,135,180,225,270,315].map(a=>`<rect x="10" y="1.5" width="4" height="5" rx="1" transform="rotate(${a} 12 12)"/>`).join("")+"</svg>";
 q("#gear").onclick=()=>{openSet();q("#dSet").showModal()};q("#sX").onclick=()=>q("#dSet").close();
 q("#setBody").addEventListener("click",e=>{const t=e.target.closest("[data-th]"),r=e.target.closest("[data-rm]");
- if(t){S.theme=t.dataset.th;applyTheme();save();openSet();live()}if(r){delete S[r.dataset.rm];save();brand();openSet()}});
+ if(t){S.theme=t.dataset.th;applyTheme();save();playFx=true;openSet();live()}if(r){delete S[r.dataset.rm];save();brand();openSet()}});
 q("#setBody").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0],k=e.target.dataset.k;if(!f||!k)return;
  S[k]=await img(f,k=="sig"?500:400,k=="sig"||f.type=="image/png");save();brand();openSet()});
 q("#ver").textContent=q("#ver2").textContent="Version "+VERSION+", last update "+UPDATED;
+
+/* dashboard card switches */
+function cardSel(){const grp=(g,t)=>`<div class="mut" style="margin:10px 0 2px">${t}</div><div class="cardsel">${CARDS.filter(c=>c[2]==g).map(c=>`<label class="tgl"><input type="checkbox" data-card="${c[0]}"${S.hide[c[0]]?"":" checked"}>${c[1]}</label>`).join("")}</div>`;
+ return `<h4>Dashboard cards</h4><div class="mut">Switch single cards on or off. Hidden cards disappear from the dashboards and the layout closes up.</div><div style="margin:8px 0 0;display:flex;gap:8px"><button data-cardall="1">Enable all</button><button data-cardall="0">Disable all</button></div>${grp("d","Project dashboard")}${grp("f","Project financial summary")}`}
+q("#setBody").addEventListener("change",e=>{const c=e.target.dataset&&e.target.dataset.card;if(!c)return;if(e.target.checked)delete S.hide[c];else S.hide[c]=true;save();playFx=true;live()});
+q("#setBody").addEventListener("click",e=>{const b=e.target.closest("[data-cardall]");if(!b)return;S.hide={};if(b.dataset.cardall=="0")CARDS.forEach(c=>S.hide[c[0]]=true);save();playFx=true;live();openSet()});
 
 /* resizable columns */
 (function(){const t=q("#mdr"),ths=[...t.querySelectorAll("th")];const ws=S.cols&&S.cols.length==ths.length?S.cols:ths.map(h=>h.offsetWidth);
