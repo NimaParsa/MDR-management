@@ -28,7 +28,7 @@ module.exports = function createUsersRouter(db, authenticate) {
     router.use(requireUsersManage);
 
     function positiveId(value) {
-        if (!/^[1-9]\\d*$/.test(String(value ?? ''))) return null;
+        if (!/^[1-9]\d*$/.test(String(value ?? ''))) return null;
         const n = Number(value);
         return Number.isSafeInteger(n) ? n : null;
     }
@@ -115,7 +115,7 @@ module.exports = function createUsersRouter(db, authenticate) {
         const email = String(body.email || '').trim().toLowerCase();
         const password = body.password;
         const assignments = validateAssignments(body.assignments);
-        if (!fullName || fullName.length > 160 || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || email.length > 190 ||
+        if (!fullName || fullName.length > 160 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 190 ||
             typeof password !== 'string' || password.length < 12 || password.length > 1024 || assignments === null) {
             return res.status(400).json({ success: false, message: 'Enter a valid name, email, password (at least 12 characters), and project assignments.' });
         }
@@ -157,7 +157,7 @@ module.exports = function createUsersRouter(db, authenticate) {
         const assignments = validateAssignments(body.assignments);
         const active = body.is_active;
         const password = body.password;
-        if (!fullName || fullName.length > 160 || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || email.length > 190 ||
+        if (!fullName || fullName.length > 160 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 190 ||
             assignments === null || typeof active !== 'boolean' ||
             (password !== undefined && (typeof password !== 'string' || password.length < 12 || password.length > 1024))) {
             return res.status(400).json({ success: false, message: 'Invalid user details, status, password, or project assignments.' });
