@@ -16,6 +16,7 @@ const money = (v:unknown,currency='USD') => new Intl.NumberFormat('en-US',{style
 const dateText = (v?:string|null) => v ? new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(v+'T00:00:00Z')) : '—';
 const escCsv = (v:unknown) => '"' + String(v ?? '').replace(/"/g,'""') + '"';
 function csvRows(text:string):string[][] {
+  text=text.replace(/^\\uFEFF/,'');
   const rows:string[][]=[]; let row:string[]=[]; let cell=''; let quoted=false;
   for(let i=0;i<text.length;i++){const ch=text[i],next=text[i+1];if(quoted){if(ch==='"'&&next==='"'){cell+='"';i++;}else if(ch==='"')quoted=false;else cell+=ch;}else if(ch==='"')quoted=true;else if(ch===','){row.push(cell);cell='';}else if(ch==='\n'){row.push(cell.replace(/\r$/,''));rows.push(row);row=[];cell='';}else cell+=ch;}
   if(cell.length||row.length){row.push(cell.replace(/\r$/,''));rows.push(row);} return rows.filter(r=>r.some(x=>String(x).trim()));
