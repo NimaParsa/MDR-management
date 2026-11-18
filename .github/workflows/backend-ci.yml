@@ -35,3 +35,6 @@ jobs:
             echo "Checking $file"
             node --check "$file"
           done
+
+      - name: Run automated tests
+        run: node --test
