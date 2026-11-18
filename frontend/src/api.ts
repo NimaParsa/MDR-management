@@ -13,7 +13,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = tokenStore.get();
   const response = await fetch(`${API_BASE}${path}`, { ...options, headers: { Accept: 'application/json', ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(token ? { Authorization: `Bearer ${token}` } : {}), ...options.headers } });
   const payload = await response.json().catch(() => ({}));
-  if (!response.ok) { if (response.status === 401) tokenStore.clear(); throw new ApiError(payload.message || `Request failed (${response.status})`, response.status); }
+  if (!response.ok) { if (response.status === 401) { tokenStore.clear(); if (!path.startsWith('/auth/login')) window.dispatchEvent(new Event('mdr:unauthorized')); } throw new ApiError(payload.message || `Request failed (${response.status})`, response.status); }
   return payload as T;
 }
 export const api = {
