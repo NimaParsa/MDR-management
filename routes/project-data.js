@@ -191,9 +191,9 @@ module.exports = function createProjectDataRouter(db, authenticate, requirePermi
                 legacy_weight_factor:
                     row.legacy_weight_factor === null
                         ? null : Number(row.legacy_weight_factor),
-                manhours: Number(row.manhours),
-                manhour_rate: Number(row.manhour_rate),
-                progress_percent: Number(row.progress_percent)
+                manhours: row.manhours === null ? null : Number(row.manhours),
+                manhour_rate: row.manhour_rate === null ? null : Number(row.manhour_rate),
+                progress_percent: row.progress_percent === null ? null : Number(row.progress_percent)
             }));
 
             res.json({
