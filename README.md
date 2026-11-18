@@ -72,6 +72,8 @@ The current project, document, transmittal, and invoice API routes are read-only
 - Login attempts are rate-limited in process memory. This limiter resets when the process restarts and is not shared across multiple application instances.
 - Reverse-proxy client IP handling has not yet been verified on the deployed Dev host. Do not enable proxy trust broadly without confirming the hosting proxy configuration.
 - Helmet security headers and a 1 MB JSON request-body limit are enabled.
+- Unknown endpoints, malformed JSON, oversized request bodies, and unexpected errors receive consistent JSON responses; internal error details are not returned to clients.
+- Login and profile responses only list projects for which the user's assigned role grants `projects.view`.
 - The public database diagnostic endpoint has been removed.
 
 ## CI and test scope
