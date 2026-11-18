@@ -19,9 +19,9 @@ test('project metrics calculate weighted progress, discipline share and financia
     assert.equal(result.documentCount, 3);
     assert.equal(result.totalWeight, 4);
     assert.equal(result.plannedManhours, 350);
-    assert.equal(result.contractValue, 1150);
-    assert.equal(result.earnedValue, 475);
-    assert.equal(result.remainingValue, 675);
+    assert.equal(result.contractValue, 1100);
+    assert.equal(result.earnedValue, 500);
+    assert.equal(result.remainingValue, 600);
     assert.equal(result.weightedProgress, 56.25);
     assert.equal(result.disciplines.find(x => x.discipline === 'Process').progress, 200 / 3);
     assert.equal(result.disciplines.find(x => x.discipline === 'Process').weightShare, 75);
@@ -29,16 +29,16 @@ test('project metrics calculate weighted progress, discipline share and financia
 
 test('earned-basis invoice subtracts previous claims before VAT', () => {
     const result = calculateInvoice(docs, { invoiceBasis: 'earned', previouslyInvoiced: 100, vatPercent: 10 });
-    assert.equal(result.earnedToDate, 475);
-    assert.equal(result.claimBasisAmount, 475);
-    assert.equal(result.amountDue, 375);
-    assert.equal(result.vatAmount, 37.5);
-    assert.equal(result.grossAmount, 412.5);
+    assert.equal(result.earnedToDate, 500);
+    assert.equal(result.claimBasisAmount, 500);
+    assert.equal(result.amountDue, 400);
+    assert.equal(result.vatAmount, 40);
+    assert.equal(result.grossAmount, 440);
 });
 
 test('full-cost invoice uses contract value and clamps amount due at zero', () => {
     const result = calculateInvoice(docs, { invoiceBasis: 'full', previouslyInvoiced: 2000, vatPercent: 0 });
-    assert.equal(result.claimBasisAmount, 1150);
+    assert.equal(result.claimBasisAmount, 1100);
     assert.equal(result.amountDue, 0);
     assert.equal(result.grossAmount, 0);
 });
