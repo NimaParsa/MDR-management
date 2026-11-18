@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+node_modules/
+*.log
+*.backup*
+tmp/
+migration_tmp/
+coverage/
+.DS_Store
+/node_modules
+/scripts/

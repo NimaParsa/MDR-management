@@ -1,0 +1,15 @@
+{
+  "name": "mdr-backend",
+  "version": "1.0.0",
+  "description": "MDR Management Backend",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.24.6"
+  }
+}
