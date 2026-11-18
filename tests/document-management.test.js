@@ -57,7 +57,7 @@ test('creates a project-scoped MDR document with V3 fields and defaults', async 
     const result = await request(router, 'POST', '/api/projects/12/documents', {
         document_no: 'PRJ-ME-DWG-001', title: 'Pump GA Drawing', discipline_id: 4,
         document_type: 'Drawing', weight_factor: 1.0001, manhours: 20,
-        manhour_rate: 3, progress_percent: 25, document_status: 'In Progress',
+        manhour_rate: 3, progress_percent: 25, document_status: 'in progress',
         planned_issue_date: '2026-12-01', actual_issue_date: null, revision_code: 'A', remarks: 'Initial issue'
     });
     assert.equal(result.status, 201);
