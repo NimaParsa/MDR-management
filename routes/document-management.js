@@ -316,10 +316,15 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
                 return normalize({ ...record, discipline_id: match.id }, project.weight_factor_mode);
             });
             const seen = new Set();
+            const seenLegacyIds = new Set();
             for (const doc of normalized) {
                 const key = doc.document_no.toLowerCase();
                 if (seen.has(key)) throw new Error(`Duplicate document number in import: ${doc.document_no}`);
                 seen.add(key);
+                if (doc.legacy_id !== null) {
+                    if (seenLegacyIds.has(doc.legacy_id)) throw new Error(`Duplicate legacy document ID in import: ${doc.legacy_id}`);
+                    seenLegacyIds.add(doc.legacy_id);
+                }
             }
 
             connection = await db.getConnection();
