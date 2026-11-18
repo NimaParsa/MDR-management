@@ -61,6 +61,7 @@ export default function MdrDocuments({project}:{project:Project|null}){
     try{
       const data=JSON.parse(await file.text());const list=Array.isArray(data)?data:data.documents;
       if(!Array.isArray(list)||!list.length)throw new Error('Invalid JSON backup: documents array is missing or empty.');
+      if(!window.confirm(`Replace the current project MDR with ${list.length} documents? This cannot be undone.`))return;
       const known=[...disc],prepared:any[]=[];
       for(const d of list){
         const name=String(d.discipline??d.discipline_name??'').trim();
@@ -69,7 +70,6 @@ export default function MdrDocuments({project}:{project:Project|null}){
         if(!found)throw new Error(`Discipline "${name}" is not configured in this project.`);
         prepared.push({document_no:d.docNo??d.document_no,title:d.title,discipline_id:found.id,document_type:d.docType??d.document_type??'Other',weight_factor:d.weight??d.weight_factor??1.0001,manhours:d.mh??d.manhours??0,manhour_rate:d.rate??d.manhour_rate??3,progress_percent:d.progress??d.progress_percent??0,document_status:d.status??d.document_status??'Not Started',planned_issue_date:d.plannedDate??d.planned_issue_date??null,actual_issue_date:d.actualDate??d.actual_issue_date??null,revision_code:d.revision??d.revision_code??null,remarks:d.remarks??null});
       }
-      if(!window.confirm(`Replace the current project MDR with ${prepared.length} documents? This cannot be undone.`))return;
       await api.importDocuments(project.id,'replace',prepared);
       if(data.invoice){try{await api.saveInvoiceSettings(project.id,{client:data.invoice.client,contractor:data.invoice.contractor,currency:data.invoice.currency,tax:data.invoice.tax,invoiceBasis:data.invoice.invoiceBasis});}catch{}}
       setDisc(known);setNotice(`Restored ${prepared.length} documents from JSON.`);await load();
