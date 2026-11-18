@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const mysql = require('mysql2/promise');
 const createProjectsRouter = require('./routes/projects');
 const createProjectDataRouter = require('./routes/project-data');
@@ -9,7 +10,9 @@ const createAuthRouter = require('./routes/auth');
 const createProjectAccess = require('./middleware/project-access');
 const app = express();
 
-app.use(express.json());
+app.disable('x-powered-by');
+app.use(helmet());
+app.use(express.json({ limit: '1mb' }));
 
 // MySQL connection pool
 const db = mysql.createPool({
