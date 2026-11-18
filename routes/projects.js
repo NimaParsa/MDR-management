@@ -18,7 +18,8 @@ module.exports = function createProjectsRouter(db, authenticate, requirePermissi
                     p.project_name,
                     p.client_name,
                     p.weight_factor_mode,
-                    p.currency_code
+                    p.currency_code,
+                    p.previous_invoiced_amount
                 FROM projects p
                 WHERE EXISTS (
                     SELECT 1
@@ -62,7 +63,8 @@ module.exports = function createProjectsRouter(db, authenticate, requirePermissi
                     project_name,
                     client_name,
                     weight_factor_mode,
-                    currency_code
+                    currency_code,
+                    previous_invoiced_amount
                 FROM projects
                 WHERE id = ?
                 LIMIT 1
