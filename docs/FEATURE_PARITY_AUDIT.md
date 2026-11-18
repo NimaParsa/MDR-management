@@ -42,7 +42,7 @@ Status definitions:
 | Print / Save PDF invoice | Implemented in branch | Browser print view |
 | CSV export of MDR | Implemented in branch | Includes source and calculated columns |
 | JSON backup download | Implemented in branch | Includes MDR and invoice header defaults |
-| JSON backup restore | Implemented in branch | Explicit confirmation; replace is blocked when documents are in transmittals |
+| JSON backup restore | Implemented in branch | Merge by legacy ID / document number preserves transmittal links; replace is explicit and blocked when documents are in transmittals |
 | XLSX / XLS / CSV import | Implemented in branch | Sheet selection, column mapping, preview, append / replace |
 | Excel import defaults WF 1.0001 and rate 3 | Implemented in branch | CSV parsing remains available without the Excel reader |
 | Auto-save | Implemented in branch | Successful mutations persist immediately to MariaDB |
