@@ -197,3 +197,49 @@ test('returns 503 when the session database query fails', async () => {
     assert.equal(res.statusCode, 503);
     assert.equal(nextCalled, false);
 });
+
+
+test('rejects a token with an unexpected issuer before querying the database', async () => {
+    process.env.JWT_SECRET = secret;
+    const token = createToken({ issuer: 'another-application' });
+    const middleware = createAuthMiddleware({
+        async execute() {
+            assert.fail('Database must not be queried for a token with the wrong issuer');
+        }
+    });
+    const req = { headers: { authorization: `Bearer ${token}` } };
+    const res = createResponse();
+    let nextCalled = false;
+
+    await middleware(req, res, () => {
+        nextCalled = true;
+    });
+
+    assert.equal(res.statusCode, 401);
+    assert.equal(nextCalled, false);
+});
+
+test('rejects a token whose subject does not match the database session user', async () => {
+    process.env.JWT_SECRET = secret;
+    const token = createToken({ subject: '8' });
+    const middleware = createAuthMiddleware({
+        async execute() {
+            return [[{
+                id: 7,
+                full_name: 'Test User',
+                email: 'test@example.invalid',
+                is_active: 1
+            }]];
+        }
+    });
+    const req = { headers: { authorization: `Bearer ${token}` } };
+    const res = createResponse();
+    let nextCalled = false;
+
+    await middleware(req, res, () => {
+        nextCalled = true;
+    });
+
+    assert.equal(res.statusCode, 401);
+    assert.equal(nextCalled, false);
+});
