@@ -12,9 +12,14 @@ function createAuthMiddleware(db) {
     return async function authenticate(req, res, next) {
         try {
             const authHeader = req.headers.authorization || '';
-            const [scheme, token] = authHeader.split(' ');
+            const authParts = authHeader.trim().split(/\s+/);
+            const [scheme, token] = authParts;
 
-            if (scheme !== 'Bearer' || !token) {
+            if (
+                authParts.length !== 2 ||
+                scheme.toLowerCase() !== 'bearer' ||
+                !token
+            ) {
                 return res.status(401).json({
                     success: false,
                     message: 'Authentication required.'
