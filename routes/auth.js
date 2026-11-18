@@ -41,6 +41,16 @@ function createAuthRouter(db, authenticate) {
                 });
             }
 
+            // Bound authentication input before database and password-hash work.
+            // The password limit is intentionally generous and does not change
+            // the existing bcrypt credential format or normal login behavior.
+            if (email.length > 254 || password.length > 1024) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Email or password exceeds the allowed length.'
+                });
+            }
+
             if (!process.env.JWT_SECRET) {
                 console.error('JWT_SECRET is not configured.');
                 return res.status(500).json({
