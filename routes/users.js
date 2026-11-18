@@ -71,11 +71,21 @@ module.exports = function createUsersRouter(db, authenticate) {
 
     router.get('/meta', async (req, res) => {
         try {
-            const [[projects], [roles]] = await Promise.all([
+            const [[projects], [roles], [permissionRows]] = await Promise.all([
                 db.execute('SELECT id, project_code, project_name FROM projects ORDER BY project_name'),
-                db.execute('SELECT id, role_key, role_name, description FROM roles ORDER BY id')
+                db.execute('SELECT id, role_key, role_name, description FROM roles ORDER BY id'),
+                db.execute(`SELECT rp.role_id, pe.permission_key
+                            FROM role_permissions rp
+                            INNER JOIN permissions pe ON pe.id = rp.permission_id
+                            ORDER BY rp.role_id, pe.permission_key`)
             ]);
-            return res.json({ success: true, projects, roles });
+            const rolesWithPermissions = roles.map(role => ({
+                ...role,
+                permissions: permissionRows
+                    .filter(item => String(item.role_id) === String(role.id))
+                    .map(item => item.permission_key)
+            }));
+            return res.json({ success: true, projects, roles: rolesWithPermissions });
         } catch (error) {
             console.error('User management metadata error:', error.message);
             return res.status(500).json({ success: false, message: 'Unable to load user management options.' });
