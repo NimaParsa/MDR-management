@@ -240,7 +240,7 @@ module.exports = function createUsersRouter(db, authenticate) {
             console.error('Update user error:', error.message);
             return res.status(500).json({ success: false, message: 'Unable to update user.' });
         } finally {
-            connection.release();
+            connection?.release();
         }
     });
 
