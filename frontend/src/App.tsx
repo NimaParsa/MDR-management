@@ -14,7 +14,7 @@ export default function App() {
   const nav = useNavigate(), loc = useLocation();
   const mobileMenuButton = useRef<HTMLButtonElement>(null);
   useEffect(()=>{setMobile(false);},[loc.pathname]);
-  useEffect(()=>{if(!mobile)return;const menu=document.getElementById('mobile-navigation');const getFocusable=()=>menu?Array.from(menu.querySelectorAll<HTMLElement>('a[href],button:not([disabled])')).filter(el=>el.offsetParent!==null):[];const firstLink=menu?.querySelector<HTMLElement>('nav a');firstLink?.focus();const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape'){event.preventDefault();setMobile(false);mobileMenuButton.current?.focus();return;}if(event.key!=='Tab')return;const items=getFocusable();if(!items.length)return;const first=items[0],last=items[items.length-1];if(event.shiftKey&&(document.activeElement===first||!menu?.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!menu?.contains(document.activeElement))){event.preventDefault();first.focus();}};document.addEventListener('keydown',onKeyDown);return()=>{document.removeEventListener('keydown',onKeyDown);};},[mobile]);
+  useEffect(()=>{if(!mobile)return;const menu=document.getElementById('mobile-navigation');const getFocusable=()=>menu?Array.from(menu.querySelectorAll<HTMLElement>('a[href],button:not([disabled])')).filter(el=>el.offsetParent!==null):[];const firstLink=menu?.querySelector<HTMLElement>('nav a');firstLink?.focus();const onKeyDown=(event:KeyboardEvent)=>{if(event.key==='Escape'){event.preventDefault();setMobile(false);mobileMenuButton.current?.focus();return;}if(event.key!=='Tab')return;const items=getFocusable();if(!items.length)return;const first=items[0],last=items[items.length-1];if(event.shiftKey&&(document.activeElement===first||!menu?.contains(document.activeElement))){event.preventDefault();last.focus();}else if(!event.shiftKey&&(document.activeElement===last||!menu?.contains(document.activeElement))){event.preventDefault();first.focus();}};document.addEventListener('keydown',onKeyDown);return()=>{document.removeEventListener('keydown',onKeyDown);mobileMenuButton.current?.focus();};},[mobile]);
   const project = useMemo(()=>auth?.projects.find(p=>Number(p.id)===Number(projectId))||null,[auth,projectId]);
   useEffect(()=>{ const unauthorized=()=>{tokenStore.clear();sessionStorage.removeItem('mdr_active_project');setAuth(null);setProjectId(null);nav('/login',{replace:true});};window.addEventListener('mdr:unauthorized',unauthorized);return()=>window.removeEventListener('mdr:unauthorized',unauthorized);},[nav]);
   useEffect(()=>{ let live=true; (async()=>{ if(!tokenStore.get()){if(live)setBoot(false);return;} try{const r=await api.me();if(!live)return;setAuth({user:r.user,projects:r.projects||[]});const saved=Number(sessionStorage.getItem('mdr_active_project'));const p=r.projects?.find(x=>Number(x.id)===saved)||r.projects?.[0];if(p)setProjectId(Number(p.id));}catch{tokenStore.clear();}finally{if(live)setBoot(false);} })();return()=>{live=false;};},[]);
@@ -50,8 +50,8 @@ function useDialogKeyboard(open:boolean,onClose:()=>void){
    const items=getFocusable();
    if(!items.length){event.preventDefault();dialog.focus();return;}
    const first=items[0],last=items[items.length-1];
-   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
-   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+   if(event.shiftKey&&(document.activeElement===first||!dialog.contains(document.activeElement))){event.preventDefault();last.focus();}
+   else if(!event.shiftKey&&(document.activeElement===last||!dialog.contains(document.activeElement))){event.preventDefault();first.focus();}
   };
   document.addEventListener('keydown',onKeyDown);
   return()=>{document.removeEventListener('keydown',onKeyDown);previouslyFocused?.focus();};
