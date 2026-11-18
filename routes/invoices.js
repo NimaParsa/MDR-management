@@ -90,6 +90,11 @@ module.exports = function createInvoicesRouter(db, authenticate, requirePermissi
                     i.invoice_no,
                     i.invoice_date,
                     i.bill_to,
+                    i.contractor_name,
+                    i.period_from,
+                    i.period_to,
+                    i.invoice_basis,
+                    i.claim_basis_amount,
                     i.currency_code,
                     i.earned_to_date,
                     i.previously_invoiced,
@@ -164,6 +169,11 @@ module.exports = function createInvoicesRouter(db, authenticate, requirePermissi
                     invoice_no,
                     invoice_date,
                     bill_to,
+                    contractor_name,
+                    period_from,
+                    period_to,
+                    invoice_basis,
+                    claim_basis_amount,
                     currency_code,
                     earned_to_date,
                     previously_invoiced,
@@ -242,7 +252,9 @@ module.exports = function createInvoicesRouter(db, authenticate, requirePermissi
                     manhours_snapshot,
                     rate_snapshot,
                     progress_percent_snapshot,
-                    earned_amount
+                    earned_amount,
+                    contract_amount,
+                    claim_amount
                 FROM invoice_items
                 WHERE invoice_id = ?
                   AND EXISTS (
