@@ -71,7 +71,7 @@ export default function MdrDocuments({project}:{project:Project|null}){
         prepared.push({document_no:d.docNo??d.document_no,title:d.title,discipline_id:found.id,document_type:d.docType??d.document_type??'Other',weight_factor:d.weight??d.weight_factor??1.0001,manhours:d.mh??d.manhours??0,manhour_rate:d.rate??d.manhour_rate??3,progress_percent:d.progress??d.progress_percent??0,document_status:d.status??d.document_status??'Not Started',planned_issue_date:d.plannedDate??d.planned_issue_date??null,actual_issue_date:d.actualDate??d.actual_issue_date??null,revision_code:d.revision??d.revision_code??null,remarks:d.remarks??null});
       }
       await api.importDocuments(project.id,'replace',prepared);
-      if(data.invoice){try{await api.saveInvoiceSettings(project.id,{client:data.invoice.client,contractor:data.invoice.contractor,currency:data.invoice.currency,tax:data.invoice.tax,invoiceBasis:data.invoice.invoiceBasis,invoiceNo:data.invoice.invoiceNo,invoiceDate:data.invoice.invoiceDate,periodFrom:data.invoice.periodFrom,periodTo:data.invoice.periodTo});}catch{}}
+      if(data.invoice&&Object.keys(data.invoice).length){try{await api.saveInvoiceSettings(project.id,{client:data.invoice.client,contractor:data.invoice.contractor,currency:data.invoice.currency,tax:data.invoice.tax,invoiceBasis:data.invoice.invoiceBasis,invoiceNo:data.invoice.invoiceNo,invoiceDate:data.invoice.invoiceDate,periodFrom:data.invoice.periodFrom,periodTo:data.invoice.periodTo});}catch{}}
       setDisc(known);setNotice(`Restored ${prepared.length} documents from JSON.`);await load();
     }catch(e){setError(e instanceof Error?e.message:'Could not restore JSON backup.');}
     finally{setBusy(false);}
