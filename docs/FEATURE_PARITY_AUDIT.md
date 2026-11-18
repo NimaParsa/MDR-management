@@ -66,10 +66,10 @@ The migration has **not** been executed. The Dev database must be backed up and 
 ## Remaining verification before hosting
 
 1. Confirm Backend CI and Frontend CI pass on the latest `backend-import` commit.
-2. Complete the GitHub preview so the user can exercise the new workflows with demo data before any hosting change. The existing GitHub Pages preview is still a visual demo and is not the live React/API application.
+2. GitHub Pages now includes the premium dashboard preview and an interactive MDR sandbox with browser-local demo data. It can be used to test document CRUD, weighted calculations, CSV/JSON backup and restore, import and invoice preview / print. It is deliberately not connected to MariaDB or the live React/API application.
 3. After explicit approval, apply the SQL migration to the confirmed Dev database only.
 4. Deploy to Dev and test document CRUD, calculations, Excel/CSV import, JSON restore, invoice generation and print output against MariaDB.
 5. Verify project isolation, role permissions, audit records, duplicate handling and transmittal deletion protection.
 6. Obtain separate explicit release approval before any merge to `main` or Production deployment.
 
-Backend unit tests use mocked database responses. They do not replace live MariaDB integration tests.
+Backend CI and Frontend CI passed on the current implementation commits; the GitHub Pages deployment also completed successfully. Backend unit tests use mocked database responses. They do not replace live MariaDB integration tests.
