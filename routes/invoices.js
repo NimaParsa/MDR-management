@@ -335,6 +335,8 @@ module.exports = function createInvoicesRouter(db, authenticate, requirePermissi
                 FOR UPDATE
             `, [projectId]);
 
+            if (!documents.length) { await connection.rollback(); return res.status(400).json({ success: false, message: 'Cannot generate an invoice because the project MDR is empty.' }); }
+
             const normalizedDocs = documents.map(d => ({
                 ...d,
                 effective_weight_factor: effectiveWeight(d, project.weight_factor_mode)
