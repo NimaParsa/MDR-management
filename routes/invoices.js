@@ -299,7 +299,7 @@ module.exports = function createInvoicesRouter(db, authenticate, requirePermissi
         const previousInput = body.previously_invoiced;
         const notes = body.notes === undefined ? null : String(body.notes).trim();
 
-        const validDate = value => value === null || (/^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value)));
+        const validDate = value => { if (value === null) return true; if (!/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false; const parsed = new Date(`${value}T00:00:00Z`); return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value; };
         if (!projectId || !invoiceNo || invoiceNo.length > 100 ||
             (billTo && billTo.length > 200) || (contractor && contractor.length > 200) ||
             !/^[A-Z]{3}$/.test(currency) || !Number.isFinite(vatPercent) || vatPercent < 0 || vatPercent > 100 ||
