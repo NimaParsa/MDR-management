@@ -1,7 +1,7 @@
 export type User = { id: number; full_name?: string; fullName?: string; email: string };
 export type Project = { id: number; project_code: string; project_name: string; client_name?: string | null; currency_code?: string | null; role_key?: string; role_name?: string; permissions: string[] };
 export type PageResult<T> = { success: boolean; data: T[]; pagination?: { page: number; limit: number; total: number; total_pages: number } };
-export type DocumentRow = { id: number; document_no: string; title: string; document_type?: string; discipline_name?: string | null; progress_percent?: number; manhours?: number };
+export type DocumentRow = { id: number; document_no: string; title: string; document_type?: string | null; discipline_name?: string | null; progress_percent?: number | null; manhours?: number | null };
 export type TransmittalRow = { id: number; transmittal_no: string; transmittal_date?: string; recipient?: string; purpose?: string; discipline_label?: string; document_count?: number; remarks?: string };
 export type InvoiceRow = { id: number; invoice_no: string; invoice_date?: string; bill_to?: string; currency_code?: string; earned_to_date?: number; previously_invoiced?: number; amount_due?: number; vat_amount?: number; gross_amount?: number; status?: string; item_count?: number };
 export type Detail<T> = { success: boolean; data: T };
