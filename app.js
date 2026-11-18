@@ -52,6 +52,29 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Readiness check: confirm the API can reach its database.
+app.get('/api/ready', async (req, res) => {
+    try {
+        await db.execute('SELECT 1 AS ready');
+
+        return res.status(200).json({
+            success: true,
+            message: 'MDR Backend is ready',
+            database: 'connected',
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        console.error('Readiness check failed:', error.message);
+
+        return res.status(503).json({
+            success: false,
+            message: 'MDR Backend is not ready',
+            database: 'unavailable',
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
 app.use('/api/projects', createProjectsRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createProjectDataRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createTransmittalsRouter(db, authenticate, requirePermission));
