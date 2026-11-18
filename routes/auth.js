@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { rateLimit } = require('express-rate-limit');
 
 function hashToken(token) {
     return crypto
@@ -13,8 +14,21 @@ function hashToken(token) {
 function createAuthRouter(db, authenticate) {
     const router = express.Router();
 
+    // Limit failed login attempts per client IP.
+    const loginLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000,
+        limit: 10,
+        standardHeaders: 'draft-7',
+        legacyHeaders: false,
+        skipSuccessfulRequests: true,
+        message: {
+            success: false,
+            message: 'Too many login attempts. Please try again later.'
+        }
+    });
+
     // Login
-    router.post('/login', async (req, res) => {
+    router.post('/login', loginLimiter, async (req, res) => {
         try {
             const email = String(req.body.email || '').trim().toLowerCase();
             const password = req.body.password;
