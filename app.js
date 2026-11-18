@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const helmet = require('helmet');
 const mysql = require('mysql2/promise');
 const createProjectsRouter = require('./routes/projects');
@@ -44,6 +46,15 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json({ limit: '1mb' }));
+
+// Serve the built React application when frontend/dist has been uploaded.
+// If the build is absent, the API-only deployment behaves as before.
+const frontendDist = path.join(__dirname, 'frontend', 'dist');
+const hasFrontendBuild = fs.existsSync(path.join(frontendDist, 'index.html'));
+
+if (hasFrontendBuild) {
+    app.use(express.static(frontendDist));
+}
 
 // MySQL connection pool
 const db = mysql.createPool({
@@ -110,6 +121,13 @@ app.use('/api/projects', createProjectsRouter(db, authenticate, requirePermissio
 app.use('/api/projects', createProjectDataRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createTransmittalsRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createInvoicesRouter(db, authenticate, requirePermission));
+
+// React Router fallback for non-API paths when the frontend build is present.
+if (hasFrontendBuild) {
+    app.get(/^\/(?!api(?:\/|$)).*/, (req, res) => {
+        res.sendFile(path.join(frontendDist, 'index.html'));
+    });
+}
 
 // Return a consistent JSON response for unknown API routes.
 app.use((req, res) => {
