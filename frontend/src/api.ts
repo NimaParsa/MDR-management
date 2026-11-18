@@ -1,5 +1,5 @@
 export type User = { id: number; full_name?: string; fullName?: string; email: string };
-export type Project = { id: number; project_code: string; project_name: string; client_name?: string | null; currency_code?: string | null; role_key?: string; role_name?: string; permissions: string[] };
+export type Project = { id: number; project_code: string; project_name: string; client_name?: string | null; currency_code?: string | null; previous_invoiced_amount?: number | string | null; role_key?: string; role_name?: string; permissions: string[] };
 export type UserAssignment = { project_id: number; role_id: number; project_code: string; project_name: string; role_key: string; role_name: string };
 export type ManagedUser = { id: number; full_name: string; email: string; is_active: boolean; last_login_at?: string | null; created_at?: string; assignments: UserAssignment[] };
 export type UserManagementMeta = { success: boolean; projects: { id: number; project_code: string; project_name: string }[]; roles: { id: number; role_key: string; role_name: string; description?: string | null; permissions: string[] }[] };
