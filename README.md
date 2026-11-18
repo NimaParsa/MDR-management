@@ -31,8 +31,9 @@ Configure these variables in the hosting environment:
 | DB_NAME | Database name |
 | JWT_SECRET | Secret used to sign and verify authentication tokens |
 | PORT | HTTP port (defaults to 3000) |
+| FRONTEND_ORIGINS | Optional comma-separated exact frontend origins allowed by CORS |
 
-Keep credentials outside source control. The backend expects environment variables to be supplied by the runtime.
+Keep credentials outside source control. The backend expects environment variables to be supplied by the runtime. Set `FRONTEND_ORIGINS` only when the frontend is hosted on a different origin; use exact origins including scheme, and leave it empty for same-origin hosting.
 
 ### Install, run and test
 
