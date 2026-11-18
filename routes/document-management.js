@@ -402,9 +402,10 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
 
     router.post('/:projectId/disciplines', requirePermission('settings.manage'), async (req, res) => {
         const projectId = positiveId(req.params.projectId);
-        const name = text(req.body?.discipline_name, 120, 'Discipline name', true);
         if (!projectId) return res.status(400).json({ success: false, message: 'Invalid project ID.' });
+        let name;
         try {
+            name = text(req.body?.discipline_name, 120, 'Discipline name', true);
             const [existing] = await db.execute(
                 'SELECT id, discipline_key, discipline_name FROM disciplines WHERE project_id = ? AND LOWER(discipline_name) = LOWER(?) LIMIT 1',
                 [projectId, name]
