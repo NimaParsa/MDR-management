@@ -1,0 +1,37 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - backend-import
+  pull_request:
+    branches:
+      - backend-import
+
+permissions:
+  contents: read
+
+jobs:
+  syntax-check:
+    name: Node.js syntax check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+
+      - name: Check JavaScript syntax
+        run: |
+          set -e
+          find . -path ./node_modules -prune -o -name "*.js" -type f -print0 | while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            node --check "$file"
+          done
