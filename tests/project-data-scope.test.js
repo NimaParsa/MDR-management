@@ -13,7 +13,11 @@ async function requestThroughRouter(router, path) {
 
     try {
         const address = server.address();
-        return await fetch(`http://127.0.0.1:${address.port}${path}`);
+        const response = await fetch(`http://127.0.0.1:${address.port}${path}`);
+        return {
+            status: response.status,
+            body: await response.json()
+        };
     } finally {
         await new Promise((resolve, reject) => {
             server.close(error => error ? reject(error) : resolve());
@@ -52,10 +56,9 @@ test('invoice detail lookup is constrained by both invoice and project IDs', asy
 
     const router = createInvoicesRouter(db, authenticate, requirePermission);
     const response = await requestThroughRouter(router, '/api/projects/12/invoices/999');
-    const body = await response.json();
 
     assert.equal(response.status, 404);
-    assert.equal(body.message, 'Invoice not found');
+    assert.equal(response.body.message, 'Invoice not found');
 });
 
 test('transmittal detail lookup is constrained by both transmittal and project IDs', async () => {
@@ -88,8 +91,7 @@ test('transmittal detail lookup is constrained by both transmittal and project I
         router,
         '/api/projects/12/transmittals/888'
     );
-    const body = await response.json();
 
     assert.equal(response.status, 404);
-    assert.equal(body.message, 'Transmittal not found');
+    assert.equal(response.body.message, 'Transmittal not found');
 });
