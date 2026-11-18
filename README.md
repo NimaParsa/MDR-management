@@ -93,6 +93,10 @@ Production output is generated in `frontend/dist`. Configure the web server's SP
 
 The frontend displays invoice values returned by the API; it does not calculate VAT, earned value, or amounts due.
 
+## Deployment readiness
+
+See [the controlled deployment checklist](docs/DEPLOYMENT_CHECKLIST.md) before deploying to Dev. Production deployment is a separate approval step; this branch must not be merged into `main` without explicit release authorization.
+
 ## Security notes
 
 - Authentication uses HS256 JWTs and database-backed sessions.
