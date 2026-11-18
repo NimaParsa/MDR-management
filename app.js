@@ -9,6 +9,7 @@ const createTransmittalsRouter = require('./routes/transmittals');
 const createInvoicesRouter = require('./routes/invoices');
 const createAuthMiddleware = require('./middleware/auth');
 const createAuthRouter = require('./routes/auth');
+const createUsersRouter = require('./routes/users');
 const createProjectAccess = require('./middleware/project-access');
 const createCorsMiddleware = require('./middleware/cors');
 const app = express();
@@ -49,6 +50,7 @@ const db = mysql.createPool({
 const authenticate = createAuthMiddleware(db);
 const { requirePermission } = createProjectAccess(db);
 app.use('/api/auth', createAuthRouter(db, authenticate));
+app.use('/api/users', createUsersRouter(db, authenticate));
 
 // Main route: serve the React application when a frontend build exists.
 // Keep the lightweight JSON response for API-only deployments.
