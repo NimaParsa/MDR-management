@@ -116,7 +116,7 @@ function UserEditor({ user, meta, onClose, onSaved }: { user: ManagedUser | null
           <button type="button" className="secondary" disabled={!projectToAdd || !roleToAdd} onClick={()=>{setAssignments(old=>[...old,{project_id:Number(projectToAdd),role_id:Number(roleToAdd)}]);setProjectToAdd('');}}>Add project</button>
         </div>}
         {!assignments.length && <p className="muted small-note">No projects assigned. This account will not see project data until access is granted.</p>}
-        <div className="role-reference"><b>Available roles</b>{meta.roles.map(role=><span key={role.id}><strong>{role.role_name}</strong>{role.description ? ` — ${role.description}` : ''}</span>)}</div>
+        <div className="role-reference"><b>Role permissions</b>{meta.roles.map(role=><span key={role.id}><strong>{role.role_name}</strong>{role.description ? ` — ${role.description}` : ''}<small>{role.permissions?.length ? role.permissions.join(' · ') : 'No permissions assigned'}</small></span>)}</div>
         {error && <div className="error" role="alert">{error}</div>}
         <div className="editor-actions"><button type="button" className="secondary" onClick={onClose}>Cancel</button><button className="primary" disabled={busy}>{busy ? 'Saving…' : 'Save user'}</button></div>
       </form>
