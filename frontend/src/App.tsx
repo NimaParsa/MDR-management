@@ -5,7 +5,7 @@ import { api, tokenStore, type Project, type User, type DocumentRow, type Transm
 
 const can = (p: Project | null, key: string) => !!p?.permissions?.includes(key);
 const fmtDate = (v?: string) => { if (!v) return '—'; const d = new Date(v); return Number.isNaN(d.getTime()) ? v : new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',year:'numeric'}).format(d); };
-const fmtMoney = (v: unknown, c = 'USD') => { const n = Number(v ?? 0); return Number.isFinite(n) ? new Intl.NumberFormat('en-US',{style:'currency',currency:/^[A-Z]{3}$/.test(c)?c:'USD',maximumFractionDigits:2}).format(n) : '—'; };
+const fmtMoney = (v: unknown, c = 'USD') => { if (v === null || v === undefined || v === '') return '—'; const n = Number(v); return Number.isFinite(n) ? new Intl.NumberFormat('en-US',{style:'currency',currency:/^[A-Z]{3}$/.test(c)?c:'USD',maximumFractionDigits:2}).format(n) : '—'; };
 const initials = (n?: string) => (n || 'MDR').split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase();
 type Auth = { user: User; projects: Project[] };
 
