@@ -272,5 +272,132 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
         }
     });
 
+
+    // Bulk import supports append and explicit replace, with transaction rollback on any invalid row.
+    router.post('/:projectId/documents/import', requirePermission('documents.create'), async (req, res) => {
+        const projectId = positiveId(req.params.projectId);
+        const body = req.body || {};
+        const mode = body.mode === 'replace' ? 'replace' : 'append';
+        const records = body.documents;
+        if (!Array.isArray(records) || records.length === 0 || records.length > 5000) {
+            return res.status(400).json({ success: false, message: 'Provide between 1 and 5000 documents.' });
+        }
+        if (mode === 'replace' && !req.projectAccess?.permissions?.includes('documents.delete')) {
+            return res.status(403).json({ success: false, message: 'Replace mode also requires document delete permission.' });
+        }
+
+        let connection;
+        try {
+            const project = await projectSettings(projectId);
+            if (!project) return res.status(404).json({ success: false, message: 'Project not found.' });
+            const [disciplines] = await db.execute(
+                'SELECT id, discipline_key, discipline_name FROM disciplines WHERE project_id = ? AND is_active = 1',
+                [projectId]
+            );
+            const normalized = records.map((record, index) => {
+                const rawName = String(record.discipline_name ?? record.discipline ?? '').trim().toLowerCase();
+                const rawKey = String(record.discipline_key ?? '').trim().toLowerCase();
+                const match = disciplines.find(d =>
+                    String(d.id) === String(record.discipline_id) ||
+                    d.discipline_key.toLowerCase() === rawKey ||
+                    d.discipline_name.toLowerCase() === rawName
+                );
+                if (!match) throw new Error(`Row ${index + 2}: discipline does not belong to this project.`);
+                return normalize({ ...record, discipline_id: match.id }, project.weight_factor_mode);
+            });
+            const seen = new Set();
+            for (const doc of normalized) {
+                const key = doc.document_no.toLowerCase();
+                if (seen.has(key)) throw new Error(`Duplicate document number in import: ${doc.document_no}`);
+                seen.add(key);
+            }
+
+            connection = await db.getConnection();
+            await connection.beginTransaction();
+            if (mode === 'replace') {
+                const [linked] = await connection.execute(`
+                    SELECT COUNT(*) AS total
+                    FROM transmittal_documents td
+                    INNER JOIN transmittals t ON t.id = td.transmittal_id
+                    WHERE t.project_id = ?
+                `, [projectId]);
+                if (Number(linked[0].total) > 0) {
+                    await connection.rollback();
+                    return res.status(409).json({ success: false, message: 'Replace is blocked because one or more documents are linked to transmittals.' });
+                }
+                await connection.execute('DELETE FROM documents WHERE project_id = ?', [projectId]);
+            }
+
+            for (const doc of normalized) {
+                await connection.execute(`
+                    INSERT INTO documents
+                        (project_id, discipline_id, document_no, title, document_type,
+                         weight_factor_manual, legacy_weight_factor, manhours, manhour_rate,
+                         progress_percent, document_status, planned_issue_date, actual_issue_date,
+                         revision_code, remarks)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `, [projectId, doc.discipline_id, doc.document_no, doc.title, doc.document_type,
+                    doc.weight_factor_manual, doc.legacy_weight_factor, doc.manhours, doc.manhour_rate,
+                    doc.progress_percent, doc.document_status, doc.planned_issue_date,
+                    doc.actual_issue_date, doc.revision_code, doc.remarks]);
+            }
+            await audit(connection, req, projectId, 'documents.imported', null, { mode, count: normalized.length });
+            await connection.commit();
+            return res.status(201).json({ success: true, imported: normalized.length, mode, message: 'MDR import completed.' });
+        } catch (error) {
+            if (connection) await connection.rollback();
+            if (error.message && /Row |required|too long|must be|Unsupported|valid discipline|Duplicate document/i.test(error.message)) {
+                return res.status(400).json({ success: false, message: error.message });
+            }
+            if (error.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, message: 'A document number already exists in this project.' });
+            console.error('MDR import error:', error.message);
+            return res.status(500).json({ success: false, message: 'Unable to import MDR records.' });
+        } finally {
+            if (connection) connection.release();
+        }
+    });
+
+    // Invoice header defaults are stored per project, not in browser storage.
+    router.get('/:projectId/invoice-settings', requirePermission('documents.view'), async (req, res) => {
+        const projectId = positiveId(req.params.projectId);
+        try {
+            const [rows] = await db.execute(
+                "SELECT setting_value FROM project_settings WHERE project_id = ? AND setting_key = 'invoice_header' LIMIT 1",
+                [projectId]
+            );
+            let settings = {};
+            if (rows.length && rows[0].setting_value) {
+                try { settings = JSON.parse(rows[0].setting_value); } catch { settings = {}; }
+            }
+            return res.json({ success: true, data: settings });
+        } catch (error) {
+            console.error('Invoice settings read error:', error.message);
+            return res.status(500).json({ success: false, message: 'Unable to load invoice settings.' });
+        }
+    });
+
+    router.put('/:projectId/invoice-settings', requirePermission('settings.manage'), async (req, res) => {
+        const projectId = positiveId(req.params.projectId);
+        const body = req.body || {};
+        const settings = {
+            client: String(body.client || '').trim().slice(0, 200),
+            contractor: String(body.contractor || '').trim().slice(0, 200),
+            currency: /^[A-Z]{3}$/.test(String(body.currency || 'USD').toUpperCase()) ? String(body.currency || 'USD').toUpperCase() : 'USD',
+            tax: Math.max(0, Math.min(100, Number(body.tax) || 0)),
+            invoiceBasis: body.invoiceBasis === 'full' ? 'full' : 'earned'
+        };
+        try {
+            await db.execute(`
+                INSERT INTO project_settings (project_id, setting_key, setting_value)
+                VALUES (?, 'invoice_header', ?)
+                ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)
+            `, [projectId, JSON.stringify(settings)]);
+            return res.json({ success: true, data: settings });
+        } catch (error) {
+            console.error('Invoice settings save error:', error.message);
+            return res.status(500).json({ success: false, message: 'Unable to save invoice settings.' });
+        }
+    });
+
     return router;
 };
