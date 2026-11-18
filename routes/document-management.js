@@ -279,8 +279,8 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
         const body = req.body || {};
         const mode = body.mode === 'replace' ? 'replace' : 'append';
         const records = body.documents;
-        if (!Array.isArray(records) || records.length === 0 || records.length > 5000) {
-            return res.status(400).json({ success: false, message: 'Provide between 1 and 5000 documents.' });
+        if (!Array.isArray(records) || records.length > 5000 || (records.length === 0 && mode !== 'replace')) {
+            return res.status(400).json({ success: false, message: 'Provide up to 5000 documents; an empty list is allowed only for replace mode.' });
         }
         if (mode === 'replace' && !req.projectAccess?.permissions?.includes('documents.delete')) {
             return res.status(403).json({ success: false, message: 'Replace mode also requires document delete permission.' });
