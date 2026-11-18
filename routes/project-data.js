@@ -172,6 +172,11 @@ module.exports = function createProjectDataRouter(db, authenticate, requirePermi
                     d.manhours,
                     d.manhour_rate,
                     d.progress_percent,
+                    d.document_status,
+                    d.planned_issue_date,
+                    d.actual_issue_date,
+                    d.revision_code,
+                    d.remarks,
                     d.created_at,
                     d.updated_at
                 FROM documents d
@@ -193,7 +198,12 @@ module.exports = function createProjectDataRouter(db, authenticate, requirePermi
                         ? null : Number(row.legacy_weight_factor),
                 manhours: row.manhours === null ? null : Number(row.manhours),
                 manhour_rate: row.manhour_rate === null ? null : Number(row.manhour_rate),
-                progress_percent: row.progress_percent === null ? null : Number(row.progress_percent)
+                progress_percent: row.progress_percent === null ? null : Number(row.progress_percent),
+                document_status: row.document_status,
+                planned_issue_date: row.planned_issue_date,
+                actual_issue_date: row.actual_issue_date,
+                revision_code: row.revision_code,
+                remarks: row.remarks
             }));
 
             res.json({
