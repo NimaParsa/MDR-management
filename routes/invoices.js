@@ -244,8 +244,14 @@ module.exports = function createInvoicesRouter(db, authenticate, requirePermissi
                     earned_amount
                 FROM invoice_items
                 WHERE invoice_id = ?
+                  AND EXISTS (
+                      SELECT 1
+                      FROM invoices i
+                      WHERE i.id = invoice_items.invoice_id
+                        AND i.project_id = ?
+                  )
                 ORDER BY id ASC
-            `, [invoiceId]);
+            `, [invoiceId, projectId]);
 
             res.json({
                 success: true,
