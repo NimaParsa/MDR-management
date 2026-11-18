@@ -30,8 +30,9 @@ function createAuthRouter(db, authenticate) {
     // Login
     router.post('/login', loginLimiter, async (req, res) => {
         try {
-            const email = String(req.body.email || '').trim().toLowerCase();
-            const password = req.body.password;
+            const body = req.body && typeof req.body === 'object' ? req.body : {};
+            const email = String(body.email || '').trim().toLowerCase();
+            const password = body.password;
 
             if (!email || typeof password !== 'string' || !password) {
                 return res.status(400).json({
