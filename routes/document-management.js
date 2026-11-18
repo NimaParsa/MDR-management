@@ -278,13 +278,16 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
     router.post('/:projectId/documents/import', requirePermission('documents.create'), async (req, res) => {
         const projectId = positiveId(req.params.projectId);
         const body = req.body || {};
-        const mode = body.mode === 'replace' ? 'replace' : 'append';
+        const mode = body.mode === 'replace' || body.mode === 'merge' ? body.mode : 'append';
         const records = body.documents;
         if (!Array.isArray(records) || records.length > 5000 || (records.length === 0 && mode !== 'replace')) {
             return res.status(400).json({ success: false, message: 'Provide up to 5000 documents; an empty list is allowed only for replace mode.' });
         }
         if (mode === 'replace' && !req.projectAccess?.permissions?.includes('documents.delete')) {
             return res.status(403).json({ success: false, message: 'Replace mode also requires document delete permission.' });
+        }
+        if (mode === 'merge' && !req.projectAccess?.permissions?.includes('documents.update')) {
+            return res.status(403).json({ success: false, message: 'Merge mode also requires document update permission.' });
         }
 
         let connection;
@@ -329,22 +332,53 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
                 await connection.execute('DELETE FROM documents WHERE project_id = ?', [projectId]);
             }
 
+            let created = 0;
+            let updated = 0;
             for (const doc of normalized) {
-                await connection.execute(`
-                    INSERT INTO documents
-                        (project_id, discipline_id, document_no, title, document_type,
-                         weight_factor_manual, legacy_weight_factor, manhours, manhour_rate,
-                         progress_percent, document_status, planned_issue_date, actual_issue_date,
-                         revision_code, remarks)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                `, [projectId, doc.discipline_id, doc.document_no, doc.title, doc.document_type,
+                const values = [doc.discipline_id, doc.document_no, doc.title, doc.document_type,
                     doc.weight_factor_manual, doc.legacy_weight_factor, doc.manhours, doc.manhour_rate,
                     doc.progress_percent, doc.document_status, doc.planned_issue_date,
-                    doc.actual_issue_date, doc.revision_code, doc.remarks]);
+                    doc.actual_issue_date, doc.revision_code, doc.remarks];
+                if (mode === 'merge') {
+                    const [existing] = await connection.execute(
+                        'SELECT id FROM documents WHERE project_id = ? AND document_no = ? LIMIT 1 FOR UPDATE',
+                        [projectId, doc.document_no]
+                    );
+                    if (existing.length) {
+                        await connection.execute(`
+                            UPDATE documents SET discipline_id = ?, document_no = ?, title = ?, document_type = ?,
+                                weight_factor_manual = ?, legacy_weight_factor = ?, manhours = ?, manhour_rate = ?,
+                                progress_percent = ?, document_status = ?, planned_issue_date = ?, actual_issue_date = ?,
+                                revision_code = ?, remarks = ?
+                            WHERE id = ? AND project_id = ?
+                        `, [...values, existing[0].id, projectId]);
+                        updated++;
+                    } else {
+                        await connection.execute(`
+                            INSERT INTO documents
+                                (project_id, discipline_id, document_no, title, document_type,
+                                 weight_factor_manual, legacy_weight_factor, manhours, manhour_rate,
+                                 progress_percent, document_status, planned_issue_date, actual_issue_date,
+                                 revision_code, remarks)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        `, [projectId, ...values]);
+                        created++;
+                    }
+                } else {
+                    await connection.execute(`
+                        INSERT INTO documents
+                            (project_id, discipline_id, document_no, title, document_type,
+                             weight_factor_manual, legacy_weight_factor, manhours, manhour_rate,
+                             progress_percent, document_status, planned_issue_date, actual_issue_date,
+                             revision_code, remarks)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    `, [projectId, ...values]);
+                    created++;
+                }
             }
-            await audit(connection, req, projectId, 'documents.imported', null, { mode, count: normalized.length });
+            await audit(connection, req, projectId, 'documents.imported', null, { mode, count: normalized.length, created, updated });
             await connection.commit();
-            return res.status(201).json({ success: true, imported: normalized.length, mode, message: 'MDR import completed.' });
+            return res.status(201).json({ success: true, imported: normalized.length, created, updated, mode, message: 'MDR import completed.' });
         } catch (error) {
             if (connection) await connection.rollback();
             if (error.message && /Row |required|too long|must be|Unsupported|valid discipline|Duplicate document/i.test(error.message)) {
