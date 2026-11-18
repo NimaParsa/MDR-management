@@ -122,6 +122,7 @@ function createAuthRouter(db, authenticate) {
                     p.project_name,
                     p.client_name,
                     p.currency_code,
+                    p.previous_invoiced_amount,
                     r.role_key,
                     r.role_name
                  FROM project_users pu
