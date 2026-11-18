@@ -37,4 +37,4 @@ jobs:
           done
 
       - name: Run automated tests
-        run: node --test
+        run: npm test
