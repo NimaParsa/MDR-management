@@ -118,6 +118,13 @@ function createAuthRouter(db, authenticate) {
                  INNER JOIN projects p ON p.id = pu.project_id
                  INNER JOIN roles r ON r.id = pu.role_id
                  WHERE pu.user_id = ?
+                   AND EXISTS (
+                       SELECT 1
+                       FROM role_permissions rp
+                       INNER JOIN permissions pe ON pe.id = rp.permission_id
+                       WHERE rp.role_id = pu.role_id
+                         AND pe.permission_key = 'projects.view'
+                   )
                  ORDER BY p.project_name`,
                 [user.id]
             );
@@ -191,6 +198,13 @@ function createAuthRouter(db, authenticate) {
                  INNER JOIN projects p ON p.id = pu.project_id
                  INNER JOIN roles r ON r.id = pu.role_id
                  WHERE pu.user_id = ?
+                   AND EXISTS (
+                       SELECT 1
+                       FROM role_permissions rp
+                       INNER JOIN permissions pe ON pe.id = rp.permission_id
+                       WHERE rp.role_id = pu.role_id
+                         AND pe.permission_key = 'projects.view'
+                   )
                  ORDER BY p.project_name`,
                 [req.user.id]
             );
