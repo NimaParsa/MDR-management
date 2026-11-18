@@ -75,9 +75,14 @@ const authenticate = createAuthMiddleware(db);
 const { requirePermission } = createProjectAccess(db);
 app.use('/api/auth', createAuthRouter(db, authenticate));
 
-// Main route
+// Main route: serve the React application when a frontend build exists.
+// Keep the lightweight JSON response for API-only deployments.
 app.get('/', (req, res) => {
-    res.json({
+    if (hasFrontendBuild) {
+        return res.sendFile(path.join(frontendDist, 'index.html'));
+    }
+
+    return res.json({
         application: 'MDR Management',
         status: 'running',
         version: '1.0.0'
