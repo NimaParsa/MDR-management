@@ -363,12 +363,18 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
         const projectId = positiveId(req.params.projectId);
         try {
             const [rows] = await db.execute(
-                "SELECT setting_value FROM project_settings WHERE project_id = ? AND setting_key = 'invoice_header' LIMIT 1",
+                "SELECT setting_key, setting_value FROM project_settings WHERE project_id = ? AND setting_key IN ('invoice_header','legacy_invoice_header') ORDER BY CASE setting_key WHEN 'invoice_header' THEN 0 ELSE 1 END LIMIT 1",
                 [projectId]
             );
             let settings = {};
             if (rows.length && rows[0].setting_value) {
-                try { settings = JSON.parse(rows[0].setting_value); } catch { settings = {}; }
+                try {
+                    const parsed = JSON.parse(rows[0].setting_value);
+                    if (parsed && typeof parsed === 'object') settings = {
+                        ...parsed,
+                        invoiceBasis: parsed.invoiceBasis ?? parsed.basis ?? 'earned'
+                    };
+                } catch { settings = {}; }
             }
             return res.json({ success: true, data: settings });
         } catch (error) {
