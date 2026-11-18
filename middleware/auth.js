@@ -29,7 +29,10 @@ function createAuthMiddleware(db) {
                 });
             }
 
-            const payload = jwt.verify(token, process.env.JWT_SECRET);
+            const payload = jwt.verify(token, process.env.JWT_SECRET, {
+                algorithms: ['HS256'],
+                issuer: 'mdr-management'
+            });
             const tokenHash = hashToken(token);
 
             const [rows] = await db.execute(
@@ -69,14 +72,19 @@ function createAuthMiddleware(db) {
             req.authTokenHash = tokenHash;
             next();
         } catch (error) {
-            if (error.name !== 'JsonWebTokenError' &&
-                error.name !== 'TokenExpiredError') {
-                console.error('Authentication error:', error.message);
+            if (error.name === 'JsonWebTokenError' ||
+                error.name === 'TokenExpiredError' ||
+                error.name === 'NotBeforeError') {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid or expired authentication token.'
+                });
             }
 
-            return res.status(401).json({
+            console.error('Authentication service error:', error.message);
+            return res.status(503).json({
                 success: false,
-                message: 'Invalid or expired authentication token.'
+                message: 'Authentication service temporarily unavailable.'
             });
         }
     };
