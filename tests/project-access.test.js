@@ -126,3 +126,25 @@ test('returns a controlled server error when the permission query fails', async 
     assert.equal(nextCalled, false);
     assert.equal(res.body.success, false);
 });
+
+test('rejects project IDs outside JavaScript safe-integer range before querying the database', async () => {
+    let queried = false;
+    const db = {
+        async execute() {
+            queried = true;
+            return [[]];
+        }
+    };
+    const middleware = createProjectAccess(db).requirePermission('documents.view');
+    const req = createRequest('9007199254740992');
+    const res = createResponse();
+    let nextCalled = false;
+
+    await middleware(req, res, () => {
+        nextCalled = true;
+    });
+
+    assert.equal(res.statusCode, 400);
+    assert.equal(nextCalled, false);
+    assert.equal(queried, false);
+});
