@@ -230,3 +230,42 @@ tbody td{font-size:12px;padding:15px}
  .invoice-paper table{min-width:0!important;font-size:9px!important}
  .invoice-paper th,.invoice-paper td{padding:4px!important}
 }
+
+
+/* Shared semantic colors for the MDR V3 workspace */
+.shell{--text:#172338;--panel:#ffffff;--surface:#f7f9fc;--accent:#3867d6;--accent-2:#1b998b;--danger:#b42318}
+.shell[data-theme="dark"]{--text:#e4ebf6;--panel:#142238;--surface:#101c2d;--accent:#89a7ff;--accent-2:#56c9b7;--danger:#ff958b}
+.shell[data-theme="gold"]{background:#090a0d;color:#f3ead7;--text:#f3ead7;--panel:#121316;--surface:#191a1e;--line:#4b3c25;--shadow:0 12px 35px rgba(0,0,0,.38);--accent:#d5b36a;--accent-2:#f0d99d;--danger:#ff9b86}
+.shell[data-theme="gold"] .work{background:radial-gradient(ellipse at 72% 0%,rgba(176,135,57,.11),transparent 38%),#090a0d}
+.shell[data-theme="gold"] .sidebar{background:#08090b;border-right:1px solid #3d321f}
+.shell[data-theme="gold"] .side-brand strong span,.shell[data-theme="gold"] .art-brand strong span{color:#e0c27c}
+.shell[data-theme="gold"] .side-nav a.active,.shell[data-theme="gold"] .side-nav a:hover{background:linear-gradient(100deg,rgba(199,160,83,.2),rgba(199,160,83,.06));color:#f5dfaa;box-shadow:inset 3px 0 #d6b46e}
+.shell[data-theme="gold"] .topbar,.shell[data-theme="gold"] .footer{background:#101114;border-color:#40331f;color:#b8aa8d}
+.shell[data-theme="gold"] .crumb,.shell[data-theme="gold"] .heading p,.shell[data-theme="gold"] .panel-head p,.shell[data-theme="gold"] .stat>small,.shell[data-theme="gold"] .stat>em,.shell[data-theme="gold"] .hint,.shell[data-theme="gold"] .footer{color:#b9ad97}
+.shell[data-theme="gold"] .crumb b,.shell[data-theme="gold"] .heading h1,.shell[data-theme="gold"] .panel-head h3,.shell[data-theme="gold"] .stat>strong,.shell[data-theme="gold"] .project-card>b{color:#f2e5c8}
+.shell[data-theme="gold"] .stat,.shell[data-theme="gold"] .panel,.shell[data-theme="gold"] .project-card,.shell[data-theme="gold"] .mdr-kpi,.shell[data-theme="gold"] .modal{background:linear-gradient(145deg,#17181b,#101114);border-color:#4b3c25;box-shadow:0 12px 35px rgba(0,0,0,.38)}
+.shell[data-theme="gold"] .mdr-group{background:#111215;border-color:#4b3c25}
+.shell[data-theme="gold"] .mdr-group>summary{background:linear-gradient(90deg,#211c13,#17181b);color:#f0d99d}
+.shell[data-theme="gold"] .mdr-heading>div>small,.shell[data-theme="gold"] .mdr-kpi small{color:#c3ae7d}
+.shell[data-theme="gold"] .mdr-kpi b,.shell[data-theme="gold"] .mdr-financial b{color:#f2d99e}
+.shell[data-theme="gold"] .mdr-financial>span,.shell[data-theme="gold"] .mdr-invoice-preview{background:#1a1916;border-color:#57452a;color:#c9b991}
+.shell[data-theme="gold"] .mdr-invoice-preview>div>span,.shell[data-theme="gold"] .mdr-invoice-preview>div>strong{background:#121316;color:#eadbb8}
+.shell[data-theme="gold"] .mdr-invoice-preview>div>strong{border-color:#b99652}
+.shell[data-theme="gold"] .mdr-progress-row>i{background:#393023}
+.shell[data-theme="gold"] .mdr-group thead th{background:#211d16;color:#d8c18a;border-color:#443722}
+.shell[data-theme="gold"] .mdr-group tbody td{color:#d4c8ad;border-color:#2c2b28}
+.shell[data-theme="gold"] .mdr-group tbody tr:hover{background:#201d17}
+.shell[data-theme="gold"] .mdr-remarks,.shell[data-theme="gold"] .mdr-toolbar small{color:#b5a98f}
+.shell[data-theme="gold"] .mdr-heading h1{color:#f3e4c3}
+.shell[data-theme="gold"] .mdr-count,.shell[data-theme="gold"] .mdr-filters input,.shell[data-theme="gold"] .mdr-filters select,.shell[data-theme="gold"] .mdr-form-grid input,.shell[data-theme="gold"] .mdr-form-grid select,.shell[data-theme="gold"] .mdr-form-grid textarea,.shell[data-theme="gold"] .mdr-map-grid select,.shell[data-theme="gold"] .mdr-import-controls input,.shell[data-theme="gold"] .mdr-import-controls select{background:#101114;border-color:#51432b;color:#f0e4c9}
+.shell[data-theme="gold"] .primary{background:linear-gradient(135deg,#f0d99d,#b58c45);color:#1a160f;box-shadow:0 5px 18px rgba(192,151,75,.2)}
+.shell[data-theme="gold"] .secondary,.shell[data-theme="gold"] .mdr-file{background:#1c1b18;border-color:#51432b;color:#e3d1a7}
+.shell[data-theme="gold"] .theme-toggle{background:#211c13;border-color:#6b542f;color:#f3dca5}
+.shell[data-theme="gold"] .theme-toggle span{color:#f0d99d}
+.shell[data-theme="gold"] .mdr-alert.success{background:#142018;color:#b6e3c5}
+.shell[data-theme="gold"] .mdr-alert.error{background:#281916;color:#f0b4a9}
+.shell[data-theme="gold"] .mdr-count{color:#e8d6ac}
+.shell[data-theme="gold"] .count-chip{background:#17181b;border-color:#4b3c25;color:#e5d3a8}
+.shell[data-theme="gold"] .pill{background:#292316;color:#e3c987}
+.shell[data-theme="gold"] .link-btn{color:#e2c27c}
+.shell[data-theme="gold"] .danger-text{color:#ff9b86!important}
