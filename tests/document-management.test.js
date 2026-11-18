@@ -105,3 +105,41 @@ test('blocks deletion of documents already included in a transmittal', async () 
     assert.equal(rolledBack,true);
     assert.equal(committed,false);
 });
+
+
+test('merges legacy document IDs in place and preserves existing database IDs', async () => {
+    const updates=[];
+    const conn=connection(async (sql, params) => {
+        if(sql.includes('SELECT id FROM documents WHERE project_id = ? AND legacy_id = ?')) {
+            assert.deepEqual(params,[12,501]);
+            return [[{id:77}]];
+        }
+        if(sql.includes('UPDATE documents SET discipline_id = ?, legacy_id = COALESCE')) {
+            updates.push({sql,params});
+            return [{affectedRows:1}];
+        }
+        if(sql.includes('INSERT INTO audit_logs')) return [{affectedRows:1}];
+        assert.fail(`Unexpected connection SQL: ${sql}`);
+    });
+    const db={
+        async execute(sql,params){
+            if(sql.includes('FROM projects')) return [[{id:12,weight_factor_mode:'automatic',currency_code:'USD'}]];
+            if(sql.includes('FROM disciplines')) return [[{id:4,discipline_key:'mechanical',discipline_name:'Mechanical'}]];
+            assert.fail(`Unexpected pool SQL: ${sql}`);
+        },
+        async getConnection(){return conn;}
+    };
+    const router=createDocumentManagementRouter(db,authenticate,requirePermission);
+    const result=await request(router,'POST','/api/projects/12/documents/import',{
+        mode:'merge',
+        documents:[{legacy_id:501,document_no:'ME-DWG-001',title:'Updated GA Drawing',discipline_id:4,discipline_name:'Mechanical',document_type:'Drawing',weight_factor:1.0001,manhours:120,manhour_rate:3,progress_percent:70,document_status:'IFR',planned_issue_date:'2026-12-01',revision_code:'C',remarks:'Recovered from V1 backup'}]
+    });
+    assert.equal(result.status,201);
+    assert.equal(result.body.updated,1);
+    assert.equal(result.body.created,0);
+    assert.equal(updates.length,1);
+    assert.equal(updates[0].params[1],501);
+    assert.equal(updates[0].params[2],'ME-DWG-001');
+    assert.equal(updates[0].params[14],77);
+    assert.equal(updates[0].params[15],12);
+});
