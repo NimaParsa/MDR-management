@@ -4,15 +4,9 @@ on:
   push:
     branches:
       - backend-import
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend-ci.yml"
   pull_request:
     branches:
       - backend-import
-    paths:
-      - "frontend/**"
-      - ".github/workflows/frontend-ci.yml"
 
 permissions:
   contents: read
