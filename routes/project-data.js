@@ -129,11 +129,11 @@ module.exports = function createProjectDataRouter(db, authenticate, requirePermi
 
             if (search && search.trim()) {
                 conditions.push(
-                    '(d.document_no LIKE ? OR d.title LIKE ?)'
+                    '(d.document_no LIKE ? OR d.title LIKE ? OR d.document_type LIKE ? OR d.remarks LIKE ? OR d.revision_code LIKE ?)'
                 );
 
                 const term = `%${search.trim()}%`;
-                params.push(term, term);
+                params.push(term, term, term, term, term);
             }
 
             const whereClause = conditions.join(' AND ');
