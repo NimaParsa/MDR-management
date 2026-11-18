@@ -65,7 +65,49 @@ export default function MdrDocuments({project}:{project:Project|null}){
   const mapFields=[['document_no','Document Number *',true],['title','Document Title *',true],['discipline','Discipline *',true],['document_type','Document Type',false],['weight_factor','Weight Factor',false],['manhours','Planned Manhours',false],['manhour_rate','Hourly Rate',false],['progress_percent','Progress (%)',false],['document_status','Status',false],['planned_issue_date','Planned Issue Date',false],['actual_issue_date','Actual Issue Date',false],['revision_code','Revision',false],['remarks','Remarks',false]] as const;
   useEffect(()=>{if(!excelHeaders.length)return;const next:Record<string,string>={};for(const [key] of mapFields){const index=excelHeaders.findIndex(h=>(aliases[key]||[]).includes(String(h).toLowerCase().trim()));next[key]=index>=0?String(index):'';}setMapping(next);},[excelHeaders.join('|')]);
   const excelDate=(value:any)=>{if(value===null||value===undefined||value==='')return null;if(typeof value==='number'&&window.XLSX){const d=window.XLSX.SSF.parse_date_code(value);return d?`${d.y}-${String(d.m).padStart(2,'0')}-${String(d.d).padStart(2,'0')}`:null;}const s=String(value).trim();return /^\d{4}-\d{2}-\d{2}$/.test(s)?s:null;};
-  const completeImport=async()=>{if(!project)return;if(!mapping.document_no||!mapping.title||!mapping.discipline){setError('Map Document Number, Document Title and Discipline before importing.');return;}const get=(row:any[],key:string,def:any='')=>mapping[key]===''?def:(row[Number(mapping[key])]??def);try{const prepared=excelRows.slice(1).filter(r=>r.some(v=>String(v).trim())).map((r,i)=>{const disciplineName=String(get(r,'discipline','')).trim();const discipline=disc.find(x=>x.discipline_name.toLowerCase()===disciplineName.toLowerCase()||x.discipline_key.toLowerCase()===disciplineName.toLowerCase());if(!discipline)throw new Error(`Row ${i+2}: discipline "${disciplineName}" is not configured in this project.`);const p=String(get(r,'progress_percent',0)).replace('%','');return {document_no:String(get(r,'document_no','')).trim(),title:String(get(r,'title','')).trim(),discipline_id:discipline.id,document_type:String(get(r,'document_type','Other')).trim()||'Other',weight_factor:String(get(r,'weight_factor',1.0001)).trim()===''?1.0001:n(get(r,'weight_factor',1.0001)),manhours:n(get(r,'manhours',0)),manhour_rate:String(get(r,'manhour_rate',3)).trim()===''?3:n(get(r,'manhour_rate',3)),progress_percent:Math.max(0,Math.min(100,n(p))),document_status:String(get(r,'document_status','Not Started')).trim()||'Not Started',planned_issue_date:excelDate(get(r,'planned_issue_date','')),actual_issue_date:excelDate(get(r,'actual_issue_date','')),revision_code:String(get(r,'revision_code','')).trim(),remarks:String(get(r,'remarks','')).trim()};}).filter(d=>d.document_no&&d.title);if(!prepared.length)throw new Error('No valid rows found.');if(importMode==='replace'&&!canDelete)throw new Error('Replace mode requires document delete permission.');if(importMode==='replace'&&!window.confirm(`Replace current MDR with ${prepared.length} rows?`))return;setBusy(true);await api.importDocuments(project.id,importMode,prepared);setNotice(`${prepared.length} document(s) imported.`);setImportOpen(false);setExcelRows([]);await load();}catch(e){setError(e instanceof Error?e.message:'Import failed.');}finally{setBusy(false);}};
+  const completeImport=async()=>{
+    if(!project)return;
+    if(!mapping.document_no||!mapping.title||!mapping.discipline){setError('Map Document Number, Document Title and Discipline before importing.');return;}
+    const get=(row:any[],key:string,def:any='')=>mapping[key]===''?def:(row[Number(mapping[key])]??def);
+    try{
+      const prepared:any[]=[];
+      const known=[...disc];
+      for(let i=1;i<excelRows.length;i++){
+        const row=excelRows[i];
+        if(!row.some(v=>String(v).trim()))continue;
+        const disciplineName=String(get(row,'discipline','')).trim();
+        let discipline=known.find(x=>x.discipline_name.toLowerCase()===disciplineName.toLowerCase()||x.discipline_key.toLowerCase()===disciplineName.toLowerCase());
+        if(!discipline&&canManageDisciplines&&disciplineName){const created=await api.createDiscipline(project.id,disciplineName);discipline=created.data;known.push(discipline);}
+        if(!discipline)throw new Error(`Row ${i+1}: discipline "${disciplineName}" is not configured; ask a project manager to add it first.`);
+        const progress=String(get(row,'progress_percent',0)).replace('%','');
+        prepared.push({
+          document_no:String(get(row,'document_no','')).trim(),
+          title:String(get(row,'title','')).trim(),
+          discipline_id:discipline.id,
+          document_type:String(get(row,'document_type','Other')).trim()||'Other',
+          weight_factor:String(get(row,'weight_factor',1.0001)).trim()===''?1.0001:n(get(row,'weight_factor',1.0001)),
+          manhours:n(get(row,'manhours',0)),
+          manhour_rate:String(get(row,'manhour_rate',3)).trim()===''?3:n(get(row,'manhour_rate',3)),
+          progress_percent:Math.max(0,Math.min(100,n(progress))),
+          document_status:String(get(row,'document_status','Not Started')).trim()||'Not Started',
+          planned_issue_date:excelDate(get(row,'planned_issue_date','')),
+          actual_issue_date:excelDate(get(row,'actual_issue_date','')),
+          revision_code:String(get(row,'revision_code','')).trim(),
+          remarks:String(get(row,'remarks','')).trim()
+        });
+      }
+      const valid=prepared.filter(x=>x.document_no&&x.title);
+      if(!valid.length)throw new Error('No valid rows found. Check document number and title columns.');
+      if(importMode==='replace'&&!canDelete)throw new Error('Replace mode requires document delete permission.');
+      if(importMode==='replace'&&!window.confirm(`Replace current MDR with ${valid.length} rows?`))return;
+      setBusy(true);
+      await api.importDocuments(project.id,importMode,valid);
+      setDisc(known);
+      setNotice(`${valid.length} document(s) imported.`);
+      setImportOpen(false);setExcelRows([]);await load();
+    }catch(e){setError(e instanceof Error?e.message:'Import failed.');}
+    finally{setBusy(false);}
+  };
 
   const metricCards=metrics?[['Total Documents',metrics.documentCount.toLocaleString()],['Weighted Project Progress',metrics.weightedProgress.toFixed(1)+'%'],['Total Weight',metrics.totalWeight.toFixed(4)],['Planned Manhours',metrics.plannedManhours.toLocaleString()],['Earned Value',money(metrics.earnedValue,currency)]]:[];
   return <div className="mdr-page">
