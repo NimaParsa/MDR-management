@@ -1,19 +1,26 @@
-# MDR Management Backend
+# MDR Management
 
-Node.js and Express API for the MDR Management application.
+MDR Management is a project-scoped engineering document control and commercial tracking application.
 
-## Runtime
+## Repository structure
+
+- `app.js`, `routes/`, `middleware/`: Node.js / Express API.
+- `tests/`: backend unit and route-level tests using mocked database responses.
+- `frontend/`: React + TypeScript single-page application.
+
+## Backend
+
+### Runtime
 
 - Node.js 22
 - MariaDB / MySQL
-- Express 4
-- mysql2 connection pool
+- Express 4 and mysql2
 
-The database schema and imported project data are managed separately from this repository. Provision the required MDR database before starting the API.
+Database schema and imported project data are provisioned separately from this repository.
 
-## Configuration
+### Configuration
 
-Provide these environment variables through your hosting control panel or process manager:
+Configure these variables in the hosting environment:
 
 | Variable | Purpose |
 | --- | --- |
@@ -25,63 +32,82 @@ Provide these environment variables through your hosting control panel or proces
 | JWT_SECRET | Secret used to sign and verify authentication tokens |
 | PORT | HTTP port (defaults to 3000) |
 
-Use a strong, unique JWT secret and keep all credentials outside source control. This application does not load a .env file itself; environment variables must be provided by the runtime or hosting environment.
+Keep credentials outside source control. The backend expects environment variables to be supplied by the runtime.
 
-## Install and run
+### Install, run and test
 
 ~~~sh
 npm install
 npm start
-~~~
-
-Run the automated test suite:
-
-~~~sh
 npm test
 ~~~
 
-## Current API surface
+### Current API surface
 
-All endpoints are prefixed with /api.
+All API routes are prefixed with `/api`.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| GET | /health | Public API process health (liveness) check |\n| GET | /ready | Database connectivity readiness check (returns 503 when the database is unavailable) |
+| GET | /health | API process liveness |
+| GET | /ready | Database readiness |
 | POST | /auth/login | Authenticate and create a database-backed session |
-| GET | /auth/me | Return the current user and assigned projects |
-| POST | /auth/logout | Invalidate the current session |
-| GET | /projects | List projects visible to the current user |
+| GET | /auth/me | Current user and assigned projects |
+| POST | /auth/logout | Invalidate current session |
+| GET | /projects | List visible projects |
 | GET | /projects/:id | Read one assigned project |
-| GET | /projects/:projectId/disciplines | List active project disciplines |
-| GET | /projects/:projectId/documents | List project documents with pagination and filters |
-| GET | /projects/:projectId/transmittals | List project transmittals |
-| GET | /projects/:projectId/transmittals/:transmittalId | Read a transmittal |
-| GET | /projects/:projectId/transmittals/:transmittalId/documents | List documents in a transmittal |
-| GET | /projects/:projectId/transmittals/:transmittalId/revisions | Read transmittal revision history |
-| GET | /projects/:projectId/invoices | List project invoices |
-| GET | /projects/:projectId/invoices/:invoiceId | Read an invoice |
-| GET | /projects/:projectId/invoices/:invoiceId/items | Read invoice items |
+| GET | /projects/:projectId/disciplines | List active disciplines |
+| GET | /projects/:projectId/documents | Paginated, filterable document register |
+| GET | /projects/:projectId/transmittals | List transmittals |
+| GET | /projects/:projectId/transmittals/:transmittalId | Read transmittal |
+| GET | /projects/:projectId/transmittals/:transmittalId/documents | Transmittal document list |
+| GET | /projects/:projectId/transmittals/:transmittalId/revisions | Transmittal revision history |
+| GET | /projects/:projectId/invoices | List invoices |
+| GET | /projects/:projectId/invoices/:invoiceId | Read invoice |
+| GET | /projects/:projectId/invoices/:invoiceId/items | Read invoice line items |
 
-The current project, document, transmittal, and invoice API routes are read-only. Write workflows and financial calculation endpoints are not implemented in this backend snapshot.
+Document, transmittal and invoice routes are currently read-only. Write workflows and financial calculation endpoints have not been implemented.
+
+## Frontend
+
+See [frontend/README.md](frontend/README.md) for setup and deployment.
+
+~~~sh
+cd frontend
+npm install
+cp .env.example .env.local
+# Set VITE_API_BASE_URL to the backend API base URL, including /api
+npm run dev
+~~~
+
+Production output is generated in `frontend/dist`. Configure the web server's SPA fallback and ensure the backend allows the deployed frontend origin through CORS.
+
+### Frontend screens
+
+- Sign in and session restoration
+- Permission-aware project selection and navigation
+- Project overview
+- Searchable and paginated document register
+- Transmittal register with document and revision details
+- Invoice tracker with invoice line-item details
+
+The frontend displays invoice values returned by the API; it does not calculate VAT, earned value, or amounts due.
 
 ## Security notes
 
-- Authentication uses signed HS256 JWTs and database-backed sessions.
-- Tokens expire after eight hours; logout deletes the current session.
-- Project routes enforce project membership and the required permission.
-- Login attempts are rate-limited in process memory. This limiter resets when the process restarts and is not shared across multiple application instances.
-- Reverse-proxy client IP handling has not yet been verified on the deployed Dev host. Do not enable proxy trust broadly without confirming the hosting proxy configuration.
-- Helmet security headers and a 1 MB JSON request-body limit are enabled.
-- Unknown endpoints, malformed JSON, oversized request bodies, and unexpected errors receive consistent JSON responses; internal error details are not returned to clients.
-- Login and profile responses only list projects for which the user's assigned role grants `projects.view`.
-- The public database diagnostic endpoint has been removed.
+- Authentication uses HS256 JWTs and database-backed sessions.
+- Tokens expire after eight hours; logout invalidates the current session.
+- Project routes enforce membership and permissions on the backend.
+- The login limiter is process-local and resets on restart.
+- Reverse-proxy client IP handling must be verified on the Dev host before enabling proxy trust.
+- Helmet headers, a 1 MB JSON body limit, and consistent JSON error responses are enabled.
+- Never expose database credentials or JWT signing secrets to the frontend.
 
 ## CI and test scope
 
-GitHub Actions checks JavaScript syntax and runs npm test for pushes and pull requests targeting backend-import.
-
-The automated suite uses mocked database responses. It is not a substitute for integration tests against the real MariaDB schema or endpoint tests on the Dev deployment.
+- Backend CI checks JavaScript syntax and runs `npm test`.
+- Frontend CI runs TypeScript checks and a production Vite build.
+- Backend automated tests use mocked database responses; they are not live MariaDB integration tests.
 
 ## Development branch
 
-Active development takes place on backend-import. The main branch and Production deployment are intentionally kept separate during this review.
+Active development takes place on `backend-import`. The `main` branch and Production deployment are intentionally kept separate.
