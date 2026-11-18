@@ -79,6 +79,19 @@ app.use('/api/projects', createProjectsRouter(db, authenticate, requirePermissio
 app.use('/api/projects', createProjectDataRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createTransmittalsRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createInvoicesRouter(db, authenticate, requirePermission));
+
+// Return a consistent JSON response for unknown API routes.
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'API endpoint not found.'
+    });
+});
+
+// Keep the error handler last so parser and route errors use the API format.
+const apiErrorHandler = require('./middleware/error-handler');
+app.use(apiErrorHandler);
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
