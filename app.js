@@ -10,6 +10,7 @@ const createInvoicesRouter = require('./routes/invoices');
 const createAuthMiddleware = require('./middleware/auth');
 const createAuthRouter = require('./routes/auth');
 const createProjectAccess = require('./middleware/project-access');
+const createCorsMiddleware = require('./middleware/cors');
 const app = express();
 
 app.disable('x-powered-by');
@@ -17,33 +18,7 @@ app.use(helmet());
 
 // Optional, exact-origin CORS allowlist for a separately hosted frontend.
 // Leave FRONTEND_ORIGINS empty when the frontend is served from the same origin.
-const allowedFrontendOrigins = new Set(
-    String(process.env.FRONTEND_ORIGINS || '')
-        .split(',')
-        .map(origin => origin.trim())
-        .filter(Boolean)
-);
-
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-
-    if (origin && allowedFrontendOrigins.has(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-        res.setHeader('Vary', 'Origin');
-        res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    }
-
-    if (req.method === 'OPTIONS') {
-        if (origin && allowedFrontendOrigins.has(origin)) {
-            return res.sendStatus(204);
-        }
-
-        return res.sendStatus(403);
-    }
-
-    next();
-});
+app.use(createCorsMiddleware(process.env.FRONTEND_ORIGINS));
 
 app.use(express.json({ limit: '1mb' }));
 
