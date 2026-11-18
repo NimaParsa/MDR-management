@@ -53,6 +53,26 @@ test('rejects requests without a Bearer token', async () => {
     assert.equal(nextCalled, false);
 });
 
+test('rejects malformed Bearer headers containing extra tokens', async () => {
+    process.env.JWT_SECRET = secret;
+    const token = createToken();
+    const middleware = createAuthMiddleware({
+        async execute() {
+            assert.fail('Database must not be queried for a malformed header');
+        }
+    });
+    const req = { headers: { authorization: `Bearer ${token} extra` } };
+    const res = createResponse();
+    let nextCalled = false;
+
+    await middleware(req, res, () => {
+        nextCalled = true;
+    });
+
+    assert.equal(res.statusCode, 401);
+    assert.equal(nextCalled, false);
+});
+
 test('rejects a token signed with an algorithm other than HS256', async () => {
     process.env.JWT_SECRET = secret;
     const token = createToken({ algorithm: 'HS512' });
