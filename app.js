@@ -49,26 +49,6 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Database connection test
-app.get('/api/db-test', async (req, res) => {
-    try {
-        const [rows] = await db.query('SELECT 1 AS result');
-
-        res.status(200).json({
-            success: true,
-            message: 'MySQL connection successful',
-            database_test: rows[0].result
-        });
-    } catch (error) {
-        console.error('Database connection error:', error.message);
-
-        res.status(500).json({
-            success: false,
-            message: 'Database connection failed'
-        });
-    }
-});
-
 app.use('/api/projects', createProjectsRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createProjectDataRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createTransmittalsRouter(db, authenticate, requirePermission));
