@@ -58,15 +58,23 @@ All API routes are prefixed with `/api`.
 | GET | /projects/:id | Read one assigned project |
 | GET | /projects/:projectId/disciplines | List active disciplines |
 | GET | /projects/:projectId/documents | Paginated, filterable document register |
+| GET | /projects/:projectId/mdr-summary | Full MDR snapshot and weighted / financial project metrics |
+| POST | /projects/:projectId/documents | Create an MDR document |
+| PATCH | /projects/:projectId/documents/:documentId | Update an MDR document |
+| DELETE | /projects/:projectId/documents/:documentId | Delete an untransmitted MDR document |
+| POST | /projects/:projectId/documents/import | Transactional append / replace MDR import |
+| POST | /projects/:projectId/disciplines | Add a custom project discipline |
+| GET / PUT | /projects/:projectId/invoice-settings | Read / save invoice header defaults |
 | GET | /projects/:projectId/transmittals | List transmittals |
 | GET | /projects/:projectId/transmittals/:transmittalId | Read transmittal |
 | GET | /projects/:projectId/transmittals/:transmittalId/documents | Transmittal document list |
 | GET | /projects/:projectId/transmittals/:transmittalId/revisions | Transmittal revision history |
 | GET | /projects/:projectId/invoices | List invoices |
+| POST | /projects/:projectId/invoices | Generate a draft invoice and immutable MDR line-item snapshot |
 | GET | /projects/:projectId/invoices/:invoiceId | Read invoice |
 | GET | /projects/:projectId/invoices/:invoiceId/items | Read invoice line items |
 
-Document, transmittal and invoice routes are currently read-only. Write workflows and financial calculation endpoints have not been implemented.
+Document create, update, delete and bulk import are implemented with project permission checks. Invoice draft generation calculates earned value or full contract cost, subtracts previously invoiced amounts, calculates VAT, and stores document-level snapshots. Transmittal routes remain read-only in this release.
 
 ## Frontend
 
@@ -86,12 +94,23 @@ Production output is generated in `frontend/dist`. Configure the web server's SP
 
 - Sign in and session restoration
 - Permission-aware project selection and navigation
-- Project overview
-- Searchable and paginated document register
-- Transmittal register with document and revision details
-- Invoice tracker with invoice line-item details
+- Project overview with weighted progress and financial KPIs
+- Editable, searchable, discipline-grouped MDR with full V3 document fields
+- XLSX / XLS / CSV import with worksheet selection, column mapping and preview (CSV remains available without the Excel reader)
+- CSV export and project-scoped JSON backup / restore
+- Transmittal register with document and revision details (read-only)
+- Invoice generator with live VAT preview, stored line-item snapshots and print / Save as PDF
+- Light, Dark and Obsidian Gold themes
 
 The frontend displays invoice values returned by the API; it does not calculate VAT, earned value, or amounts due.
+
+## MDR V3 database migration
+
+The initial schema predates several V3 fields. Before using the new MDR and invoice write workflows on a database, take a fresh database backup and review / apply:
+
+`migrations/001_mdr_v3_feature_parity.sql`
+
+The migration adds document status, planned / actual issue dates, revision and remarks; invoice contractor and claim-period fields; and contract / claim amounts on invoice snapshots. It is not run automatically by the application. Confirm the target database and obtain explicit approval before executing it.
 
 ## Deployment readiness
 
