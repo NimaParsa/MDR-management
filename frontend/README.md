@@ -15,7 +15,7 @@ cd frontend
 npm install
 ~~~
 
-Copy `.env.example` to `.env.local` and set the API URL:
+For the integrated cPanel deployment, the default `/api` URL is correct. Copy `.env.example` to `.env.local` only if you need to override it:
 
 ~~~env
 VITE_API_BASE_URL=https://dev-mdr.zarrinparsa.ir/api
@@ -36,9 +36,9 @@ npm run typecheck
 npm run build
 ~~~
 
-The static site is generated in `frontend/dist`. Upload the contents of that directory to the intended frontend web root. Configure the web server to serve `index.html` for application routes (SPA fallback).
+The static site is generated in `frontend/dist`. For the integrated Node deployment, upload the complete `dist` directory to `frontend/dist` under the backend application root. The Express app detects `frontend/dist/index.html`, serves the static assets, and routes non-API paths to the React entry point. The existing API-only behavior remains unchanged when no build is present.
 
-Set `VITE_API_BASE_URL` at build time. It must include the backend `/api` prefix. The API must allow the frontend origin through its CORS configuration when the frontend and API use different origins.
+Set `VITE_API_BASE_URL` at build time; it must include the backend `/api` prefix. Same-origin hosting uses `/api` and requires no CORS configuration. If hosting the frontend on a separate origin, set the exact origin in the backend `FRONTEND_ORIGINS` allowlist.
 
 ## Included screens
 
