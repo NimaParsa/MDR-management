@@ -59,7 +59,8 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
         const manhours = number(body.manhours ?? body.mh, 'Planned manhours', 0, 0, 999999999);
         const rate = number(body.manhour_rate ?? body.rate, 'Hourly rate', 3, 0, 999999999);
         const progress = number(body.progress_percent ?? body.progress, 'Progress', 0, 0, 100);
-        const status = text(body.document_status ?? body.status ?? 'Not Started', 40, 'Status', true);
+        const rawStatus = text(body.document_status ?? body.status ?? 'Not Started', 40, 'Status', true);
+        const status = [...STATUSES].find(value => value.toLowerCase() === rawStatus.toLowerCase()) || rawStatus;
         if (!STATUSES.has(status)) throw new Error('Unsupported document status.');
         return {
             document_no: docNo,
