@@ -60,19 +60,19 @@ export default function MdrDocuments({project}:{project:Project|null}){
   const restoreJson=async(file?:File)=>{
     if(!project||!file)return;setBusy(true);setError('');
     try{
-      const data=JSON.parse(await file.text());const list=Array.isArray(data)?data:data.documents;
+      const data=JSON.parse(await file.text());const list=Array.isArray(data)?data:(Array.isArray(data.documents)?data.documents:data.docs);
       if(!Array.isArray(list))throw new Error('Invalid JSON backup: documents array is missing.');
       if(!window.confirm(`Replace the current project MDR with ${list.length} documents? This cannot be undone.`))return;
       const known=[...disc],prepared:any[]=[];
       for(const d of list){
-        const name=String(d.discipline??d.discipline_name??'').trim();
+        const name=String(d.discipline??d.discipline_name??d.disc??'').trim();
         let found=known.find(x=>x.discipline_name.toLowerCase()===name.toLowerCase()||x.discipline_key.toLowerCase()===name.toLowerCase());
         if(!found&&canManageDisciplines&&name){const created=await api.createDiscipline(project.id,name);found=created.data;known.push(found);}
         if(!found)throw new Error(`Discipline "${name}" is not configured in this project.`);
-        prepared.push({document_no:d.docNo??d.document_no,title:d.title,discipline_id:found.id,document_type:d.docType??d.document_type??'Other',weight_factor:d.weight??d.weight_factor??1.0001,manhours:d.mh??d.manhours??0,manhour_rate:d.rate??d.manhour_rate??3,progress_percent:d.progress??d.progress_percent??0,document_status:d.status??d.document_status??'Not Started',planned_issue_date:d.plannedDate??d.planned_issue_date??null,actual_issue_date:d.actualDate??d.actual_issue_date??null,revision_code:d.revision??d.revision_code??null,remarks:d.remarks??null});
+        prepared.push({document_no:d.docNo??d.document_no??d.no,title:d.title,discipline_id:found.id,document_type:d.docType??d.document_type??d.type??'Other',weight_factor:d.weight??d.weight_factor??d.wf??1.0001,manhours:d.mh??d.manhours??d.hrs??0,manhour_rate:d.rate??d.manhour_rate??3,progress_percent:d.progress??d.progress_percent??d.pr??0,document_status:d.status??d.document_status??'Not Started',planned_issue_date:d.plannedDate??d.planned_issue_date??d.planned??null,actual_issue_date:d.actualDate??d.actual_issue_date??d.actual??null,revision_code:d.revision??d.revision_code??d.rev??null,remarks:d.remarks??null});
       }
       await api.importDocuments(project.id,'replace',prepared);
-      if(data.invoice&&Object.keys(data.invoice).length){try{await api.saveInvoiceSettings(project.id,{client:data.invoice.client,contractor:data.invoice.contractor,currency:data.invoice.currency,tax:data.invoice.tax,invoiceBasis:data.invoice.invoiceBasis,invoiceNo:data.invoice.invoiceNo,invoiceDate:data.invoice.invoiceDate,periodFrom:data.invoice.periodFrom,periodTo:data.invoice.periodTo});}catch{}}
+      const invoiceBackup=data.invoice??data.inv;if(invoiceBackup&&Object.keys(invoiceBackup).length){try{await api.saveInvoiceSettings(project.id,{client:invoiceBackup.client,contractor:invoiceBackup.contractor,currency:invoiceBackup.currency,tax:invoiceBackup.tax,invoiceBasis:invoiceBackup.invoiceBasis??invoiceBackup.basis,invoiceNo:invoiceBackup.invoiceNo,invoiceDate:invoiceBackup.invoiceDate,periodFrom:invoiceBackup.periodFrom,periodTo:invoiceBackup.periodTo});}catch{}}
       setDisc(known);setNotice(`Restored ${prepared.length} documents from JSON.`);await load();
     }catch(e){setError(e instanceof Error?e.message:'Could not restore JSON backup.');}
     finally{setBusy(false);}
