@@ -322,8 +322,14 @@ module.exports = function createTransmittalsRouter(db, authenticate, requirePerm
                     display_order
                 FROM transmittal_revisions
                 WHERE transmittal_id = ?
+                  AND EXISTS (
+                      SELECT 1
+                      FROM transmittals t
+                      WHERE t.id = transmittal_revisions.transmittal_id
+                        AND t.project_id = ?
+                  )
                 ORDER BY display_order ASC, id ASC
-            `, [transmittalId]);
+            `, [transmittalId, projectId]);
 
             res.json({
                 success: true,
