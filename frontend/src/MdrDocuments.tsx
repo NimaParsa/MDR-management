@@ -60,7 +60,7 @@ export default function MdrDocuments({project}:{project:Project|null}){
     if(!project||!file)return;setBusy(true);setError('');
     try{
       const data=JSON.parse(await file.text());const list=Array.isArray(data)?data:data.documents;
-      if(!Array.isArray(list)||!list.length)throw new Error('Invalid JSON backup: documents array is missing or empty.');
+      if(!Array.isArray(list))throw new Error('Invalid JSON backup: documents array is missing.');
       if(!window.confirm(`Replace the current project MDR with ${list.length} documents? This cannot be undone.`))return;
       const known=[...disc],prepared:any[]=[];
       for(const d of list){
