@@ -399,5 +399,43 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
         }
     });
 
+
+    router.post('/:projectId/disciplines', requirePermission('settings.manage'), async (req, res) => {
+        const projectId = positiveId(req.params.projectId);
+        const name = text(req.body?.discipline_name, 120, 'Discipline name', true);
+        if (!projectId) return res.status(400).json({ success: false, message: 'Invalid project ID.' });
+        try {
+            const [existing] = await db.execute(
+                'SELECT id, discipline_key, discipline_name FROM disciplines WHERE project_id = ? AND LOWER(discipline_name) = LOWER(?) LIMIT 1',
+                [projectId, name]
+            );
+            if (existing.length) return res.status(200).json({ success: true, data: existing[0], existing: true });
+            const base = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 48) || 'custom';
+            let key = base;
+            let suffix = 2;
+            while (true) {
+                const [taken] = await db.execute(
+                    'SELECT id FROM disciplines WHERE project_id = ? AND discipline_key = ? LIMIT 1',
+                    [projectId, key]
+                );
+                if (!taken.length) break;
+                key = `${base}-${suffix++}`;
+            }
+            const [orderRows] = await db.execute(
+                'SELECT COALESCE(MAX(display_order), 0) + 1 AS next_order FROM disciplines WHERE project_id = ?',
+                [projectId]
+            );
+            const [result] = await db.execute(
+                'INSERT INTO disciplines (project_id, discipline_key, discipline_name, display_order, is_active) VALUES (?, ?, ?, ?, 1)',
+                [projectId, key, name, Number(orderRows[0].next_order)]
+            );
+            return res.status(201).json({ success: true, data: { id: result.insertId, discipline_key: key, discipline_name: name } });
+        } catch (error) {
+            if (error.message && /required|too long/.test(error.message)) return res.status(400).json({ success: false, message: error.message });
+            console.error('Create discipline error:', error.message);
+            return res.status(500).json({ success: false, message: 'Unable to create discipline.' });
+        }
+    });
+
     return router;
 };
