@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { Activity, ArrowUpRight, Bell, BookOpen, Building2, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, FileCheck2, FileText, LayoutDashboard, LogOut, Menu, Moon, Search, ShieldCheck, Sparkles, Sun, Users as UsersIcon, X } from 'lucide-react';
+import { Activity, ArrowUpRight, Bell, BookOpen, Building2, ChevronDown, ChevronLeft, ChevronRight, CircleDollarSign, DraftingCompass, FileCheck2, FileText, Layers3, LayoutDashboard, LogOut, Menu, Moon, Search, ShieldCheck, Sparkles, Sun, Users as UsersIcon, Workflow, X } from 'lucide-react';
 import { api, tokenStore, ApiError, type Project, type User, type DocumentRow, type TransmittalRow, type InvoiceRow, type PageResult } from './api';
 import Users from './Users';
 import MdrDocuments from './MdrDocuments';
@@ -37,7 +37,39 @@ function Sidebar({user,project,canManageUsers,mobile,close,logout}:{user:User;pr
 function Login({onLogin,error}:{onLogin:(e:string,p:string)=>Promise<void>;error:string}){
  const [email,setEmail]=useState(''),[password,setPassword]=useState(''),[show,setShow]=useState(false),[busy,setBusy]=useState(false);
  const submit=async(e:FormEvent)=>{e.preventDefault();setBusy(true);try{await onLogin(email,password);}finally{setBusy(false);}};
- return <div className="login"><section className="login-art"><div className="art-brand"><b className="brand-mark big">M</b><div><strong>MDR<span>.</span></strong><small>MANAGEMENT SUITE</small></div></div><div className="art-copy"><small>ENGINEERING · CONTROL · DELIVERY</small><h1>Clarity across<br/><em>every document.</em></h1><p>A unified workspace for engineering document control, transmittals and project commercial visibility.</p></div><div className="art-foot">◈ Project intelligence <span>BUILT FOR COMPLEX PROJECTS</span></div></section><section className="login-side"><div className="login-box"><div className="mobile-brand"><b className="brand-mark">M</b><strong>MDR<span>.</span></strong></div><small className="kicker">WELCOME BACK</small><h2>Sign in to your workspace</h2><p>Enter your account details to continue.</p><form onSubmit={submit}><label>Email address<input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="name@company.com" autoComplete="username" required/></label><label>Password<div className="password"><input type={show?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Enter your password" autoComplete="current-password" required/><button type="button" aria-label={show?'Hide password':'Show password'} aria-pressed={show} onClick={()=>setShow(value=>!value)}>{show?'Hide':'Show'}</button></div></label>{error&&<div className="error" role="alert">{error}</div>}<button className="primary full" disabled={busy} aria-busy={busy}>{busy?'Signing in…':'Sign in'} <ChevronRight size={17}/></button></form><div className="login-secure"><ShieldCheck size={16}/> Your session is protected by secure authentication.</div><small className="copyright">© {new Date().getFullYear()} MDR Management. All rights reserved.</small></div></section></div>;
+ return <div className="login engineering-login">
+  <section className="login-art engineering-art" aria-label="MDR engineering workspace">
+   <div className="blueprint-grid" aria-hidden="true"/>
+   <div className="art-brand"><b className="brand-mark big">M</b><div><strong>MDR<span>.</span></strong><small>ENGINEERING MANAGEMENT SYSTEM</small></div></div>
+   <div className="engineering-visual" aria-hidden="true">
+    <div className="visual-crosshair crosshair-a"/><div className="visual-crosshair crosshair-b"/>
+    <div className="blueprint-ring ring-outer"/><div className="blueprint-ring ring-inner"/>
+    <div className="blueprint-core"><DraftingCompass size={48} strokeWidth={1.1}/></div>
+    <div className="blueprint-axis axis-x"/><div className="blueprint-axis axis-y"/>
+    <span className="drawing-label label-a">DOC CONTROL / 01</span><span className="drawing-label label-b">PROJECT SYSTEMS</span><span className="drawing-label label-c">REV. 01 · IFC</span>
+    <div className="drawing-card card-doc"><FileText size={17}/><span><b>DOCUMENT REGISTER</b><small>Revision & status tracking</small></span><i/></div>
+    <div className="drawing-card card-flow"><Workflow size={17}/><span><b>WORKFLOW CONTROL</b><small>Transmittals · Reviews</small></span><i/></div>
+    <div className="drawing-card card-layer"><Layers3 size={17}/><span><b>PROJECT STRUCTURE</b><small>Disciplines · Packages</small></span><i/></div>
+   </div>
+   <div className="art-copy"><small>ENGINEERING · DOCUMENT CONTROL · DELIVERY</small><h1>Built for precision.<br/><em>Designed for control.</em></h1><p>One connected workspace to organize engineering documents, manage transmittals and keep project information in view.</p></div>
+   <div className="art-foot"><span>◈ ENGINEERING WORKSPACE</span><span>STRUCTURE · TRACEABILITY · CONTROL</span></div>
+  </section>
+  <section className="login-side engineering-login-side">
+   <div className="login-box engineering-login-box">
+    <div className="mobile-brand"><b className="brand-mark">M</b><strong>MDR<span>.</span></strong></div>
+    <div className="login-heading-icon"><ShieldCheck size={21}/><span>SECURE PROJECT ACCESS</span></div>
+    <small className="kicker">WELCOME BACK</small><h2>Sign in to your workspace</h2><p>Access your project documents and engineering controls.</p>
+    <form onSubmit={submit}>
+     <label>Email address<input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="name@company.com" autoComplete="username" required/></label>
+     <label>Password<div className="password"><input type={show?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Enter your password" autoComplete="current-password" required/><button type="button" aria-label={show?'Hide password':'Show password'} aria-pressed={show} onClick={()=>setShow(value=>!value)}>{show?'Hide':'Show'}</button></div></label>
+     {error&&<div className="error" role="alert">{error}</div>}
+     <button className="primary full engineering-submit" disabled={busy} aria-busy={busy}>{busy?'Signing in…':'Sign in securely'} <ChevronRight size={17}/></button>
+    </form>
+    <div className="login-secure"><ShieldCheck size={16}/> Encrypted session · Project-scoped access</div>
+    <div className="login-footnote"><span>AUTHORIZED PERSONNEL ONLY</span><small>© {new Date().getFullYear()} MDR Management</small></div>
+   </div>
+  </section>
+ </div>;
 }
 function Heading({kicker,heading,desc,action}:{kicker:string;heading:string;desc:string;action?:ReactNode}){return <div className="heading"><div><small className="kicker">{kicker}</small><h1>{heading}</h1><p>{desc}</p></div>{action}</div>;}
 function Stat({icon:Icon,label,value,note,tone}:{icon:import('lucide-react').LucideIcon;label:string;value:string;note:string;tone:string}){return <div className="stat"><span className={`stat-icon ${tone}`}><Icon size={18}/></span><small>{label}</small><strong>{value}</strong><em>{note}</em></div>;}
