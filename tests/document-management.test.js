@@ -140,6 +140,6 @@ test('merges legacy document IDs in place and preserves existing database IDs', 
     assert.equal(updates.length,1);
     assert.equal(updates[0].params[1],501);
     assert.equal(updates[0].params[2],'ME-DWG-001');
-    assert.equal(updates[0].params[14],77);
-    assert.equal(updates[0].params[15],12);
+    assert.equal(updates[0].params[15],77);
+    assert.equal(updates[0].params[16],12);
 });
