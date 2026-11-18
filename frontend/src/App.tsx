@@ -38,6 +38,7 @@ function useDialogKeyboard(open:boolean,onClose:()=>void){
   if(!open)return;
   const dialog=document.querySelector<HTMLElement>('[role="dialog"]');
   if(!dialog)return;
+  const previouslyFocused=document.activeElement instanceof HTMLElement?document.activeElement:null;
   const getFocusable=()=>Array.from(dialog.querySelectorAll<HTMLElement>('button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'));
   getFocusable()[0]?.focus();
   const onKeyDown=(event:KeyboardEvent)=>{
@@ -50,7 +51,7 @@ function useDialogKeyboard(open:boolean,onClose:()=>void){
    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
   };
   document.addEventListener('keydown',onKeyDown);
-  return()=>document.removeEventListener('keydown',onKeyDown);
+  return()=>{document.removeEventListener('keydown',onKeyDown);previouslyFocused?.focus();};
  },[open,onClose]);
 }
 function Empty({text}:{text:string}){return <div className="empty"><BookOpen size={19}/>{text}</div>;}
