@@ -37,7 +37,7 @@ npm start
 Run the automated test suite:
 
 ~~~sh
-node --test
+npm test
 ~~~
 
 ## Current API surface
@@ -76,7 +76,7 @@ The current project, document, transmittal, and invoice API routes are read-only
 
 ## CI and test scope
 
-GitHub Actions checks JavaScript syntax and runs node --test for pushes and pull requests targeting backend-import.
+GitHub Actions checks JavaScript syntax and runs npm test for pushes and pull requests targeting backend-import.
 
 The automated suite uses mocked database responses. It is not a substitute for integration tests against the real MariaDB schema or endpoint tests on the Dev deployment.
 
