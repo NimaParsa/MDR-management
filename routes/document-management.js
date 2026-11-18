@@ -379,11 +379,31 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
     router.put('/:projectId/invoice-settings', requirePermission('settings.manage'), async (req, res) => {
         const projectId = positiveId(req.params.projectId);
         const body = req.body || {};
+        const validDate = value => {
+            if (!value) return '';
+            const s = String(value);
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+            const parsed = new Date(`${s}T00:00:00Z`);
+            return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === s ? s : null;
+        };
+        const invoiceDate = validDate(body.invoiceDate);
+        const periodFrom = validDate(body.periodFrom);
+        const periodTo = validDate(body.periodTo);
+        const tax = Number(body.tax ?? 0);
+        if (invoiceDate === null || periodFrom === null || periodTo === null ||
+            !Number.isFinite(tax) || tax < 0 || tax > 100 ||
+            (periodFrom && periodTo && periodFrom > periodTo)) {
+            return res.status(400).json({ success: false, message: 'Invalid invoice defaults.' });
+        }
         const settings = {
             client: String(body.client || '').trim().slice(0, 200),
             contractor: String(body.contractor || '').trim().slice(0, 200),
+            invoiceNo: String(body.invoiceNo || '').trim().slice(0, 100),
+            invoiceDate,
+            periodFrom,
+            periodTo,
             currency: /^[A-Z]{3}$/.test(String(body.currency || 'USD').toUpperCase()) ? String(body.currency || 'USD').toUpperCase() : 'USD',
-            tax: Math.max(0, Math.min(100, Number(body.tax) || 0)),
+            tax,
             invoiceBasis: body.invoiceBasis === 'full' ? 'full' : 'earned'
         };
         try {
