@@ -28,7 +28,12 @@ CROSS JOIN (
     UNION ALL SELECT 'architecture', 'Architecture', 11
     UNION ALL SELECT 'project-engineering', 'Project Engineering', 12
     UNION ALL SELECT 'other', 'Other', 13
-) AS d;
+) AS d
+WHERE NOT EXISTS (
+    SELECT 1 FROM disciplines existing
+    WHERE existing.project_id = p.id
+      AND LOWER(existing.discipline_name) = LOWER(d.discipline_name)
+);
 
 ALTER TABLE invoices
   ADD COLUMN IF NOT EXISTS contractor_name VARCHAR(200) NULL,
