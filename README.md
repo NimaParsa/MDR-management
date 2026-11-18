@@ -62,7 +62,7 @@ All API routes are prefixed with `/api`.
 | POST | /projects/:projectId/documents | Create an MDR document |
 | PATCH | /projects/:projectId/documents/:documentId | Update an MDR document |
 | DELETE | /projects/:projectId/documents/:documentId | Delete an untransmitted MDR document |
-| POST | /projects/:projectId/documents/import | Transactional append / replace MDR import |
+| POST | /projects/:projectId/documents/import | Transactional append / merge / replace MDR import |
 | POST | /projects/:projectId/disciplines | Add a custom project discipline |
 | GET / PUT | /projects/:projectId/invoice-settings | Read / save invoice header defaults |
 | GET | /projects/:projectId/transmittals | List transmittals |
