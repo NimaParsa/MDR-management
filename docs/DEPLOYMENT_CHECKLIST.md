@@ -41,6 +41,7 @@ Never put credentials in Git, frontend environment variables, build artifacts, s
 - [ ] Update the Node application files from the approved `backend-import` commit.
 - [ ] Keep the host's environment configuration outside the source checkout.
 - [ ] Install production dependencies in the backend application directory using the hosting platform's supported process (for example, `npm install --omit=dev --no-audit --no-fund`). There is currently no committed backend lockfile, so record the installed dependency versions.
+- [ ] Run `npm run preflight`. It checks Node version, required environment-variable presence, port formats, HTTPS CORS origins, and whether the frontend build exists. It never prints secret values and does not test database connectivity.
 - [ ] Upload the complete `frontend/dist` directory from the matching CI artifact to `frontend/dist` under the backend application root.
 - [ ] Do not upload frontend source maps or local development environment files unless specifically required.
 - [ ] Restart the Node application using the cPanel Node.js application controls.
