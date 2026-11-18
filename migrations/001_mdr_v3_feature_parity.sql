@@ -10,6 +10,26 @@ ALTER TABLE documents
   ADD COLUMN IF NOT EXISTS revision_code VARCHAR(40) NULL,
   ADD COLUMN IF NOT EXISTS remarks TEXT NULL;
 
+-- Preserve the original V3 fixed discipline catalogue for every existing project.
+INSERT IGNORE INTO disciplines (project_id, discipline_key, discipline_name, display_order, is_active)
+SELECT p.id, d.discipline_key, d.discipline_name, d.display_order, 1
+FROM projects p
+CROSS JOIN (
+    SELECT 'process' AS discipline_key, 'Process' AS discipline_name, 1 AS display_order
+    UNION ALL SELECT 'mechanical', 'Mechanical', 2
+    UNION ALL SELECT 'piping', 'Piping', 3
+    UNION ALL SELECT 'civil-structural', 'Civil & Structural', 4
+    UNION ALL SELECT 'electrical', 'Electrical', 5
+    UNION ALL SELECT 'instrumentation-control', 'Instrumentation & Control', 6
+    UNION ALL SELECT 'pipeline', 'Pipeline', 7
+    UNION ALL SELECT 'hse', 'HSE', 8
+    UNION ALL SELECT 'telecom', 'Telecom', 9
+    UNION ALL SELECT 'hvac', 'HVAC', 10
+    UNION ALL SELECT 'architecture', 'Architecture', 11
+    UNION ALL SELECT 'project-engineering', 'Project Engineering', 12
+    UNION ALL SELECT 'other', 'Other', 13
+) AS d;
+
 ALTER TABLE invoices
   ADD COLUMN IF NOT EXISTS contractor_name VARCHAR(200) NULL,
   ADD COLUMN IF NOT EXISTS period_from DATE NULL,
