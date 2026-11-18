@@ -37,3 +37,10 @@ jobs:
         run: npm run typecheck
       - name: Build
         run: npm run build
+      - name: Upload production frontend bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: mdr-frontend-dist
+          path: frontend/dist
+          if-no-files-found: error
+          retention-days: 14
