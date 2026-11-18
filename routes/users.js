@@ -129,8 +129,9 @@ module.exports = function createUsersRouter(db, authenticate) {
             typeof password !== 'string' || password.length < 12 || password.length > 1024 || assignments === null) {
             return res.status(400).json({ success: false, message: 'Enter a valid name, email, password (at least 12 characters), and project assignments.' });
         }
-        const connection = await db.getConnection();
+        let connection;
         try {
+            connection = await db.getConnection();
             await connection.beginTransaction();
             if (!(await assignmentsExist(connection, assignments))) {
                 await connection.rollback();
@@ -150,11 +151,11 @@ module.exports = function createUsersRouter(db, authenticate) {
             await connection.commit();
             return res.status(201).json({ success: true, message: 'User created.', id: insert.insertId });
         } catch (error) {
-            await connection.rollback();
+            if (connection) await connection.rollback().catch(() => {});
             console.error('Create user error:', error.message);
             return res.status(500).json({ success: false, message: 'Unable to create user.' });
         } finally {
-            connection.release();
+            connection?.release();
         }
     });
 
@@ -175,8 +176,9 @@ module.exports = function createUsersRouter(db, authenticate) {
         if (userId === Number(req.user.id) && active === false) {
             return res.status(400).json({ success: false, message: 'You cannot deactivate your own account.' });
         }
-        const connection = await db.getConnection();
+        let connection;
         try {
+            connection = await db.getConnection();
             await connection.beginTransaction();
             const [target] = await connection.execute('SELECT id FROM users WHERE id = ? LIMIT 1', [userId]);
             if (!target.length) {
@@ -186,6 +188,25 @@ module.exports = function createUsersRouter(db, authenticate) {
             if (!(await assignmentsExist(connection, assignments))) {
                 await connection.rollback();
                 return res.status(400).json({ success: false, message: 'One or more selected projects or roles do not exist.' });
+            }
+            if (userId === Number(req.user.id)) {
+                const adminRoleIds = assignments.map(item => item.role_id);
+                let retainsManagement = false;
+                if (adminRoleIds.length) {
+                    const [adminRows] = await connection.execute(
+                        `SELECT 1 FROM role_permissions rp
+                         INNER JOIN permissions pe ON pe.id = rp.permission_id
+                         WHERE rp.role_id IN (${adminRoleIds.map(() => '?').join(',')})
+                           AND pe.permission_key = 'users.manage'
+                         LIMIT 1`,
+                        adminRoleIds
+                    );
+                    retainsManagement = adminRows.length > 0;
+                }
+                if (!retainsManagement) {
+                    await connection.rollback();
+                    return res.status(400).json({ success: false, message: 'Keep at least one project assignment with user-management permission on your own account.' });
+                }
             }
             const [duplicate] = await connection.execute('SELECT id FROM users WHERE email = ? AND id <> ? LIMIT 1', [email, userId]);
             if (duplicate.length) {
@@ -205,10 +226,17 @@ module.exports = function createUsersRouter(db, authenticate) {
                 );
             }
             await replaceAssignments(connection, userId, assignments);
+            if (password !== undefined || active === false) {
+                if (userId === Number(req.user.id)) {
+                    await connection.execute('DELETE FROM user_sessions WHERE user_id = ? AND token_hash <> ?', [userId, req.authTokenHash]);
+                } else {
+                    await connection.execute('DELETE FROM user_sessions WHERE user_id = ?', [userId]);
+                }
+            }
             await connection.commit();
             return res.json({ success: true, message: 'User updated.' });
         } catch (error) {
-            await connection.rollback();
+            if (connection) await connection.rollback().catch(() => {});
             console.error('Update user error:', error.message);
             return res.status(500).json({ success: false, message: 'Unable to update user.' });
         } finally {
