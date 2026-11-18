@@ -6,7 +6,7 @@ Run the automated test suite with:
 npm test
 ```
 
-The suite currently contains 21 automated tests covering:
+The suite currently contains 22 automated tests covering:
 
 - Project-access middleware: malformed IDs, missing membership, insufficient permission, successful authorization, and database failures.
 - Authentication middleware: missing bearer token, disallowed JWT algorithm, valid database-backed session, missing session, disabled user, and database failures.
