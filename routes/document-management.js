@@ -358,7 +358,7 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
     });
 
     // Invoice header defaults are stored per project, not in browser storage.
-    router.get('/:projectId/invoice-settings', requirePermission('documents.view'), async (req, res) => {
+    router.get('/:projectId/invoice-settings', requirePermission('invoices.view'), async (req, res) => {
         const projectId = positiveId(req.params.projectId);
         try {
             const [rows] = await db.execute(
