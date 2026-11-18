@@ -46,7 +46,7 @@ All endpoints are prefixed with /api.
 
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
-| GET | /health | Public backend health check |
+| GET | /health | Public API process health (liveness) check |\n| GET | /ready | Database connectivity readiness check (returns 503 when the database is unavailable) |
 | POST | /auth/login | Authenticate and create a database-backed session |
 | GET | /auth/me | Return the current user and assigned projects |
 | POST | /auth/logout | Invalidate the current session |
