@@ -55,6 +55,11 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
         const documentType = text(body.document_type ?? body.docType ?? 'Other', 100, 'Document type', true);
         const disciplineId = positiveId(body.discipline_id);
         if (!disciplineId) throw new Error('A valid discipline is required.');
+        let legacyId = null;
+        if (body.legacy_id !== undefined && body.legacy_id !== null && body.legacy_id !== '') {
+            legacyId = Number(body.legacy_id);
+            if (!Number.isSafeInteger(legacyId) || legacyId < 0) throw new Error('Legacy document ID must be a non-negative integer.');
+        }
         const weight = number(body.weight_factor ?? body.weight, 'Weight factor', 1.0001, 0.0001, 999999.9999);
         const manhours = number(body.manhours ?? body.mh, 'Planned manhours', 0, 0, 999999999);
         const rate = number(body.manhour_rate ?? body.rate, 'Hourly rate', 3, 0, 999999999);
@@ -64,6 +69,7 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
         if (!STATUSES.has(status)) throw new Error('Unsupported document status.');
         return {
             document_no: docNo,
+            legacy_id: legacyId,
             title,
             document_type: documentType,
             discipline_id: disciplineId,
@@ -335,18 +341,27 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
             let created = 0;
             let updated = 0;
             for (const doc of normalized) {
-                const values = [doc.discipline_id, doc.document_no, doc.title, doc.document_type,
+                const values = [doc.discipline_id, doc.legacy_id, doc.document_no, doc.title, doc.document_type,
                     doc.weight_factor_manual, doc.legacy_weight_factor, doc.manhours, doc.manhour_rate,
                     doc.progress_percent, doc.document_status, doc.planned_issue_date,
                     doc.actual_issue_date, doc.revision_code, doc.remarks];
                 if (mode === 'merge') {
-                    const [existing] = await connection.execute(
-                        'SELECT id FROM documents WHERE project_id = ? AND document_no = ? LIMIT 1 FOR UPDATE',
-                        [projectId, doc.document_no]
-                    );
+                    let existing = [];
+                    if (doc.legacy_id !== null) {
+                        [existing] = await connection.execute(
+                            'SELECT id FROM documents WHERE project_id = ? AND legacy_id = ? LIMIT 1 FOR UPDATE',
+                            [projectId, doc.legacy_id]
+                        );
+                    }
+                    if (!existing.length) {
+                        [existing] = await connection.execute(
+                            'SELECT id FROM documents WHERE project_id = ? AND document_no = ? LIMIT 1 FOR UPDATE',
+                            [projectId, doc.document_no]
+                        );
+                    }
                     if (existing.length) {
                         await connection.execute(`
-                            UPDATE documents SET discipline_id = ?, document_no = ?, title = ?, document_type = ?,
+                            UPDATE documents SET discipline_id = ?, legacy_id = COALESCE(legacy_id, ?), document_no = ?, title = ?, document_type = ?,
                                 weight_factor_manual = ?, legacy_weight_factor = ?, manhours = ?, manhour_rate = ?,
                                 progress_percent = ?, document_status = ?, planned_issue_date = ?, actual_issue_date = ?,
                                 revision_code = ?, remarks = ?
@@ -356,22 +371,22 @@ module.exports = function createDocumentManagementRouter(db, authenticate, requi
                     } else {
                         await connection.execute(`
                             INSERT INTO documents
-                                (project_id, discipline_id, document_no, title, document_type,
+                                (project_id, discipline_id, legacy_id, document_no, title, document_type,
                                  weight_factor_manual, legacy_weight_factor, manhours, manhour_rate,
                                  progress_percent, document_status, planned_issue_date, actual_issue_date,
                                  revision_code, remarks)
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                         `, [projectId, ...values]);
                         created++;
                     }
                 } else {
                     await connection.execute(`
                         INSERT INTO documents
-                            (project_id, discipline_id, document_no, title, document_type,
+                            (project_id, discipline_id, legacy_id, document_no, title, document_type,
                              weight_factor_manual, legacy_weight_factor, manhours, manhour_rate,
                              progress_percent, document_status, planned_issue_date, actual_issue_date,
                              revision_code, remarks)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     `, [projectId, ...values]);
                     created++;
                 }
