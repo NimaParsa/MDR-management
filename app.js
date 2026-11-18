@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const mysql = require('mysql2/promise');
 const createProjectsRouter = require('./routes/projects');
 const createProjectDataRouter = require('./routes/project-data');
+const createDocumentManagementRouter = require('./routes/document-management');
 const createTransmittalsRouter = require('./routes/transmittals');
 const createInvoicesRouter = require('./routes/invoices');
 const createAuthMiddleware = require('./middleware/auth');
@@ -100,6 +101,7 @@ app.get('/api/ready', async (req, res) => {
 });
 
 app.use('/api/projects', createProjectsRouter(db, authenticate, requirePermission));
+app.use('/api/projects', createDocumentManagementRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createProjectDataRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createTransmittalsRouter(db, authenticate, requirePermission));
 app.use('/api/projects', createInvoicesRouter(db, authenticate, requirePermission));
