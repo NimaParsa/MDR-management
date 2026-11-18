@@ -49,8 +49,66 @@ th{font-size:11px}
 @media(max-width:760px){.heading h1{font-size:28px}.stat{padding:16px}.stat strong{font-size:27px}.panel{padding:17px}.chart-head{align-items:flex-start;flex-direction:column}.chart-canvas{height:170px}.top{height:64px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
+
+/* OBSIDIAN / CHAMPAGNE GOLD — premium engineering command center */
+body.gold{
+ --bg:#080a0e;--surface:#11151c;--surface2:#171d26;--ink:#f2eee5;--muted:#a39b8c;
+ --line:#34302a;--nav:#07090d;--blue:#d6b36a;--shadow:0 12px 36px rgba(0,0,0,.38);
+ background-image:radial-gradient(ellipse at 78% 8%,rgba(185,143,65,.12),transparent 32%),radial-gradient(ellipse at 12% 72%,rgba(185,143,65,.07),transparent 35%);
+}
+body.gold:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.13;background-image:linear-gradient(rgba(214,179,106,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(214,179,106,.12) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
+body.gold .main,body.gold .sidebar{position:relative}
+body.gold .brandmark{background:linear-gradient(145deg,#f2d99b,#9c7130);color:#17120a;box-shadow:0 0 28px #c59a4a44}
+body.gold .brand strong span{color:#dfbd78}
+body.gold .project{background:linear-gradient(135deg,#171a20,#201c14);border-color:#57462a;box-shadow:inset 0 1px #ffffff08}
+body.gold .nav button:hover,body.gold .nav button.active{background:linear-gradient(100deg,#332817,#211d16);color:#f8e7bf}
+body.gold .nav button.active{box-shadow:inset 3px 0 #d6b36a,0 0 22px #c99b4a12}
+body.gold .top{background:rgba(13,16,21,.92);backdrop-filter:blur(16px);border-color:#3a3224}
+body.gold .demo{background:#332817;color:#f0d69b;border:1px solid #6e552d}
+body.gold .theme{border-color:#7b6030;background:linear-gradient(135deg,#342919,#17140f);color:#f1d89f}
+body.gold .banner{background:radial-gradient(circle at 85% 20%,#604821 0,transparent 33%),linear-gradient(110deg,#17191d,#282117 62%,#3a2b18);border:1px solid #72572d;box-shadow:0 15px 40px #0008,inset 0 1px #f4dba522}
+body.gold .banner small{color:#e6c987}
+body.gold .active{border-color:#b28a47;background:#d6b36a18;color:#f1d89f}
+body.gold .stat,body.gold .panel,body.gold .dashboard-chart{background:linear-gradient(145deg,#151a21,#101319);border-color:#3a3327;box-shadow:0 12px 34px #0006,inset 0 1px #ffffff08}
+body.gold .stat{position:relative;overflow:hidden}
+body.gold .stat:after{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,#d6b36a,transparent);opacity:.7}
+body.gold .staticon{background:#352a19!important;color:#e5c47e!important;border:1px solid #6a512a}
+body.gold .stat strong,body.gold .ringcenter strong{color:#f0d69b;text-shadow:0 0 22px #d6b36a22}
+body.gold .ring{background:conic-gradient(#d6b36a 68%,#393329 0);filter:drop-shadow(0 0 13px #c69c4a22)}
+body.gold .activityicon{background:#2b2418;color:#e4c47f;border:1px solid #574326}
+body.gold .link{color:#e2c17b}
+body.gold .pill{background:#1e3329;color:#9cdbb5;border:1px solid #315541}
+body.gold .pill.review{background:#3a2d19;color:#edcc83;border-color:#70552c}
+body.gold .pill.draft{background:#242a32;color:#b7c1ce;border:1px solid #3a4655}
+body.gold th{background:#1b1b1a;color:#d2bd91}
+body.gold td{border-color:#302d27}
+body.gold .progress{background:#302c24}
+body.gold .progress i{background:linear-gradient(90deg,#94703a,#f0d38d);box-shadow:0 0 12px #d6b36a55}
+body.gold .chart-actions button{background:#1d1b17;border-color:#51432a;color:#cbb98e}
+body.gold .chart-actions button.selected{background:linear-gradient(135deg,#e3c47e,#a87c37);color:#17120a;border-color:#e3c47e}
+body.gold .live-dot{background:#d6b36a;box-shadow:0 0 12px #d6b36a}
+body.gold .search,body.gold input{background:#0d1117;border-color:#40392d;color:#eee4cf}
+body.gold .btn{background:#1a1b1b;border-color:#51432a;color:#e8d7b2}
+body.gold .btn.primary{background:linear-gradient(135deg,#e3c47e,#a87c37);color:#17120a;border-color:#e3c47e}
+body.gold .sidefoot{border-color:#393126}
+body.gold .avatar{background:linear-gradient(135deg,#d8b56e,#775326);color:#17120a}
+body.gold .notice{color:#b7a783}
+body.gold .footnote{color:#93866c}
+body.gold .stat:hover,body.gold .panel:hover,body.gold .dashboard-chart:hover{border-color:#8a6a35;box-shadow:0 18px 45px #0009,0 0 24px #d6b36a12;transform:translateY(-4px)}
+body.gold .dashboard-chart{position:relative;overflow:hidden}
+body.gold .dashboard-chart:before{content:"";position:absolute;top:0;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,#d6b36a,transparent)}
+body.gold .chart-canvas{filter:drop-shadow(0 0 5px #d6b36a22)}
+body.gold .eyebrow{color:#c5a568}
+body.gold .ring:before{background:#11151c}
+body.gold .chart-summary{color:#e2c17b}
+@keyframes goldSweep{0%{transform:translateX(-120%)}100%{transform:translateX(220%)}}
+body.gold .banner{position:relative;overflow:hidden}
+body.gold .banner:after{content:"";position:absolute;top:-60%;bottom:-60%;width:22%;left:0;background:linear-gradient(90deg,transparent,#ffffff12,transparent);transform:skewX(-20deg);animation:goldSweep 8s ease-in-out infinite}
+body.gold .panelhead h3{color:#f0e5cd}
+@media(prefers-reduced-motion:reduce){body.gold .banner:after{animation:none}}
+
 </style></head><body><div class="app"><aside class="sidebar"><div class="brand"><div class="brandmark">M</div><div><strong>MDR<span>.</span></strong><small>MANAGEMENT SUITE</small></div></div><div class="project"><div class="eyebrow">ACTIVE PROJECT</div><b>LVN-TK07 · Lavan Storage Tank</b><span>IOOC · Active workspace</span></div><div class="navlabel">WORKSPACE</div><nav class="nav" id="nav"><button class="active" data-page="overview"><span class="ico">▦</span> Overview</button><button data-page="documents"><span class="ico">▤</span> Documents</button><button data-page="transmittals"><span class="ico">⇧</span> Transmittals</button><button data-page="invoices"><span class="ico">＄</span> Invoice tracker</button><button data-page="users"><span class="ico">♙</span> User management</button></nav><div class="sidefoot">◈ &nbsp; Secure workspace<br>Project-scoped access enabled<div class="user"><div class="avatar">NP</div><div><b>Nima Parsa</b><small>Administrator · Preview</small></div></div></div></aside>
-<div class="main"><header class="top"><div class="crumb">Workspace &nbsp;/&nbsp; <b id="crumb">Overview</b></div><div class="topright"><span class="demo">DEMO DATA · NOT LIVE</span><button class="theme" id="theme">☾ &nbsp; Night mode</button></div></header><main class="content">
+<div class="main"><header class="top"><div class="crumb">Workspace &nbsp;/&nbsp; <b id="crumb">Overview</b></div><div class="topright"><span class="demo">DEMO DATA · NOT LIVE</span><button class="theme" id="theme">✧ &nbsp; Obsidian Gold</button></div></header><main class="content">
 <section class="page show" id="overview"><div class="heading"><div><div class="eyebrow">PROJECT OVERVIEW</div><h1>Good to see you.</h1><p>Here’s the latest snapshot of your engineering project.</p></div><button class="btn">Switch project ↗</button></div><div class="banner"><div><small>CURRENT PROJECT</small><h2>Lavan Storage Tank</h2><p>LVN-TK07 · IOOC · Engineering & Commercial</p></div><span class="active">● Active workspace</span></div><div class="stats"><div class="stat"><div class="staticon blue">▤</div><small>Documents</small><strong>163</strong><em>Across all disciplines</em></div><div class="stat"><div class="staticon purple">⇧</div><small>Transmittals</small><strong>12</strong><em>3 issued this month</em></div><div class="stat"><div class="staticon amber">＄</div><small>Invoices</small><strong>08</strong><em>2 awaiting review</em></div><div class="stat"><div class="staticon green">◔</div><small>Average progress</small><strong>68%</strong><em>Based on demo document data</em></div></div><div class="grid"><section class="panel"><div class="panelhead"><div><h3>Recent transmittals</h3><p>Latest document submissions</p></div><a class="link" href="#" data-go="transmittals">View all ↗</a></div><div class="activity"><div class="activityicon">⇧</div><div><b>TR-012 · Issued for Review</b><small>IOOC · 18 Nov 2026</small></div><div class="right"><b>8 docs</b><small>Today</small></div></div><div class="activity"><div class="activityicon">⇧</div><div><b>TR-011 · Issued for Approval</b><small>IOOC · 12 Nov 2026</small></div><div class="right"><b>14 docs</b><small>6 days ago</small></div></div><div class="activity"><div class="activityicon">⇧</div><div><b>TR-010 · For Information</b><small>PMC · 05 Nov 2026</small></div><div class="right"><b>6 docs</b><small>13 days ago</small></div></div><div class="activity"><div class="activityicon">⇧</div><div><b>TR-009 · Issued for Review</b><small>IOOC · 28 Oct 2026</small></div><div class="right"><b>11 docs</b><small>21 days ago</small></div></div></section><section class="panel"><div class="panelhead"><div><h3>Document progress</h3><p>Overall engineering completion</p></div><span class="pill">ON TRACK</span></div><div class="ringwrap"><div class="ring"><div class="ringcenter"><strong>68%</strong><small>Average progress</small></div></div></div><div class="legend"><span>Completed / in progress</span><span>Remaining</span></div></section></div><section class="panel tablepanel"><div class="panelhead"><div><h3>Engineering performance</h3><p>Document status by discipline · sample values</p></div><span class="link">VIEW REGISTER ↗</span></div><div class="tablewrap"><table><thead><tr><th>DISCIPLINE</th><th>TOTAL DOCS</th><th>COMPLETED</th><th>IN PROGRESS</th><th>COMPLETION</th></tr></thead><tbody><tr><td><b>Mechanical</b></td><td>38</td><td>25</td><td>10</td><td><div class="progress"><i style="width:66%"></i></div></td></tr><tr><td><b>Piping</b></td><td>52</td><td>35</td><td>13</td><td><div class="progress"><i style="width:67%"></i></div></td></tr><tr><td><b>Electrical</b></td><td>24</td><td>17</td><td>5</td><td><div class="progress"><i style="width:71%"></i></div></td></tr><tr><td><b>Instrumentation</b></td><td>27</td><td>17</td><td>7</td><td><div class="progress"><i style="width:63%"></i></div></td></tr><tr><td><b>Process</b></td><td>22</td><td>16</td><td>4</td><td><div class="progress"><i style="width:73%"></i></div></td></tr></tbody></table></div></section><div class="notice">ⓘ &nbsp; Preview workspace with illustrative sample data. No live project records are connected.</div></section>
 <section class="page" id="documents"><div class="heading"><div><div class="eyebrow">ENGINEERING CONTROL</div><h1>Document register</h1><p>Search and review engineering documents across project disciplines.</p></div><button class="btn">＋ Add document</button></div><section class="panel"><div class="toolbar"><input class="search" id="docsearch" placeholder="⌕  Search document number or title…"><button class="btn">All disciplines　⌄</button></div><div class="tablewrap"><table id="doctable"><thead><tr><th>DOCUMENT NUMBER</th><th>TITLE</th><th>DISCIPLINE</th><th>REV.</th><th>STATUS</th><th>PROGRESS</th></tr></thead><tbody>
 <tr><td><b>LVN-TK07-ME-DS-001</b></td><td>Storage Tank Data Sheet</td><td>Mechanical</td><td>02</td><td><span class="pill">Approved</span></td><td>100%</td></tr><tr><td><b>LVN-TK07-PI-PD-014</b></td><td>Process Flow Diagram</td><td>Piping</td><td>01</td><td><span class="pill review">Under review</span></td><td>85%</td></tr><tr><td><b>LVN-TK07-EL-SL-003</b></td><td>Electrical Single Line Diagram</td><td>Electrical</td><td>00</td><td><span class="pill draft">In progress</span></td><td>55%</td></tr><tr><td><b>LVN-TK07-IN-DS-008</b></td><td>Instrument Index</td><td>Instrumentation</td><td>03</td><td><span class="pill">Approved</span></td><td>100%</td></tr><tr><td><b>LVN-TK07-PR-DS-022</b></td><td>Process Equipment Data Sheet</td><td>Process</td><td>00</td><td><span class="pill review">Under review</span></td><td>70%</td></tr><tr><td><b>LVN-TK07-PI-PD-021</b></td><td>P&amp;ID for Storage Tank</td><td>Piping</td><td>01</td><td><span class="pill draft">In progress</span></td><td>45%</td></tr></tbody></table></div><div class="empty" id="noresults" hidden>No matching documents.</div></section></section>
@@ -64,8 +122,8 @@ const nav=document.getElementById('nav'),pages=[...document.querySelectorAll('.p
 function showPage(name){pages.forEach(p=>p.classList.toggle('show',p.id===name));nav.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.page===name));crumb.textContent=({overview:'Overview',documents:'Documents',transmittals:'Transmittals',invoices:'Invoice tracker',users:'User management'})[name]||'Overview';window.scrollTo({top:0,behavior:'smooth'});}
 nav.addEventListener('click',e=>{const b=e.target.closest('button[data-page]');if(b)showPage(b.dataset.page);});
 document.querySelectorAll('[data-go]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showPage(a.dataset.go);}));
-const theme=document.getElementById('theme');function setTheme(dark){document.body.classList.toggle('dark',dark);theme.textContent=dark?'☀  Day mode':'☾  Night mode';try{localStorage.setItem('mdr-preview-theme',dark?'dark':'light')}catch{}}
-let saved='light';try{saved=localStorage.getItem('mdr-preview-theme')||'light'}catch{}setTheme(saved==='dark');theme.addEventListener('click',()=>setTheme(!document.body.classList.contains('dark')));
+const theme=document.getElementById('theme');function setTheme(mode){document.body.classList.toggle('dark',mode==='dark');document.body.classList.toggle('gold',mode==='gold');theme.textContent=mode==='gold'?'☀  Day mode':mode==='dark'?'✧  Obsidian Gold':'☾  Night mode';try{localStorage.setItem('mdr-preview-theme',mode)}catch{}}
+let saved='gold';try{saved=localStorage.getItem('mdr-preview-theme')||'gold'}catch{}setTheme(saved);theme.addEventListener('click',()=>{const mode=document.body.classList.contains('gold')?'light':document.body.classList.contains('dark')?'gold':'dark';setTheme(mode);});
 const search=document.getElementById('docsearch');search?.addEventListener('input',()=>{let count=0;document.querySelectorAll('#doctable tbody tr').forEach(row=>{const show=row.textContent.toLowerCase().includes(search.value.toLowerCase());row.hidden=!show;if(show)count++;});document.getElementById('noresults').hidden=count>0;});
 
 /* Interactive dashboard: animated metrics and selectable trend ranges */
@@ -90,8 +148,8 @@ const search=document.getElementById('docsearch');search?.addEventListener('inpu
    for(let i=0;i<n;i++){seed=(seed*9301+49297)%233280;let v=Math.min(96,Math.max(18,base+i*(range===90?2.2:1.5)+(seed/233280)*18-7));pts.push({x:left+cw*i/(n-1),y:top+ch*(1-v/100),v});}
    const grad=ctx.createLinearGradient(0,top,0,h);grad.addColorStop(0,'rgba(75,112,218,.25)');grad.addColorStop(1,'rgba(75,112,218,0)');
    ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.lineTo(pts[n-1].x,top+ch);ctx.lineTo(pts[0].x,top+ch);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
-   ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle='#5578d7';ctx.lineWidth=3;ctx.lineJoin='round';ctx.stroke();
-   pts.forEach((p,i)=>{if(i===n-1||i===Math.floor(n/2)){ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fillStyle='#5578d7';ctx.fill();}});
+   ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.strokeStyle=getComputedStyle(document.body).getPropertyValue('--blue').trim()||'#5578d7';ctx.lineWidth=3;ctx.lineJoin='round';ctx.stroke();
+   pts.forEach((p,i)=>{if(i===n-1||i===Math.floor(n/2)){ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--blue').trim()||'#5578d7';ctx.fill();}});
    chart.querySelector('.chart-summary').textContent=range+'-day view · '+Math.round(pts[n-1].v)+'% activity index';
  }
  chart.querySelectorAll('[data-range]').forEach(b=>b.addEventListener('click',()=>{range=Number(b.dataset.range);chart.querySelectorAll('button').forEach(x=>x.classList.toggle('selected',x===b));draw();}));
